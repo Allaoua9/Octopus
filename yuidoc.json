@@ -1,0 +1,10 @@
+{
+  "name": "Octopus",
+  "description": "An api for watermarking EPUB documents",
+  "version": "0.0.1",
+  "url": "",
+  "options": {
+    "outdir": "./doc",
+    "paths": "."
+  }
+}

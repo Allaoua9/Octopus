@@ -1,0 +1,31 @@
+{
+  "name": "octopus",
+  "version": "0.0.1",
+  "description": "An api for watermarking EPUB files",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab -c -L -C"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allaoua9/Octopus.git"
+  },
+  "keywords": [
+    "EPUB",
+    "Watermark"
+  ],
+  "author": "Allaoua Benchikh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/allaoua9/Octopus/issues"
+  },
+  "homepage": "https://github.com/allaoua9/Octopus#readme",
+  "dependencies": {
+    "hapi": "^13.2.1",
+    "joi": "^8.0.4"
+  },
+  "devDependencies": {
+    "code": "^2.1.0",
+    "lab": "^10.2.0"
+  }
+}
