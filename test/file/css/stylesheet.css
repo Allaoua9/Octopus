@@ -1,0 +1,19 @@
+/*This is a comment that should be removed*/
+h2 {
+    page-break-before: always;
+    padding-top: 1em;
+    padding-top: 2em; /*this property should be removed*/
+    width: 100px;
+    width: 200px;
+}
+/* this is another comment that should be removed */
+.pgmonospaced, .anotherclass /*this rule should be divided*/ {
+    font-family: monospace;
+    font-size: 0.9em
+}
+a.pgkilled {
+    text-decoration: none
+}
+h2 {
+    width: 100px
+}

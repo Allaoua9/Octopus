@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="mathjs-DefinitelyTyped" type="javaScript">
+    <properties>
+      <option name="frameworkName" value="node_modules" />
+      <sourceFilesUrls>
+        <item url="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_github.com_borisyankov_DefinitelyTyped_raw_master_mathjs_mathjs.d.ts" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$APPLICATION_CONFIG_DIR$/javascript/extLibs/http_github.com_borisyankov_DefinitelyTyped_raw_master_mathjs_mathjs.d.ts" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

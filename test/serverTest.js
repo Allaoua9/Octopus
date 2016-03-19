@@ -22,7 +22,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
     Lab.test('Testing /watermark route handler with valid input', (done) => {
 
-        const fileStream = Fs.createReadStream('./test/file/book.epub');
+        const fileStream = Fs.createReadStream('./test/file/book/book1.epub');
         /* Creating a FormData object*/
         const form = new FormData();
         form.append('transactionID', 'A3DF2E');
@@ -42,7 +42,7 @@ Lab.experiment('Testing the server and the routes', () => {
             server.inject(options, (response) => {
 
                 Code.expect(response.result.success).to.be.equal(true);
-                Code.expect(response.result.filename).to.be.equal('book.epub');
+                Code.expect(response.result.filename).to.be.equal('book1.epub');
                 done();
             });
         });
@@ -50,7 +50,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
     Lab.test('Testing /watermark route with invalid input', (done) => {
 
-        const fileStream = Fs.createReadStream('./test/file/book.epub');
+        const fileStream = Fs.createReadStream('./test/file/book/book.epub');
         /* Creating a FormData object*/
         const form = new FormData();
         form.append('transactionID', 'alert()');
@@ -77,7 +77,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
     Lab.test('Testing /watermark route with invalid epub file', (done) => {
 
-        const fileStream = Fs.createReadStream('./test/file/invalidFile');
+        const fileStream = Fs.createReadStream('./test/file/book/invalidFile');
         /* Creating a FormData object*/
         const form = new FormData();
         form.append('transactionID', 'A2E1');
