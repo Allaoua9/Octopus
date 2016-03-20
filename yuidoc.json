@@ -4,7 +4,13 @@
   "version": "0.0.1",
   "url": "",
   "options": {
+    "linkNatives": "true",
+    "exclude": "node_modules, doc",
     "outdir": "./doc",
-    "paths": "."
+    "paths": ".",
+    "themedir": "node_modules/yuidoc-bootstrap-theme",
+    "helpers": [
+      "node_modules/yuidoc-bootstrap-theme/helpers/helpers.js"
+    ]
   }
 }

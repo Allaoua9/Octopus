@@ -6,9 +6,11 @@
 const Lab = require('lab').script();
 const Code = require('code');
 const Fs = require('fs');
-const Css = require('../lib/cssWatermark/css.js');
+const Css = require('../lib/cssWatermark/cssParser.js');
 
 Lab.experiment('Testing CSS Module', () => {
+
+    const cssParser = new Css.CssParser();
 
     Lab.test('It should create valid Css objects, Rules and Declarations', (done) => {
 
@@ -38,9 +40,9 @@ Lab.experiment('Testing CSS Module', () => {
     Lab.test('It should parse a css string into a AST object and transform it back into a string', (done) => {
 
         const cssCode = 'h2{width:100px;}';
-        let cssObject = Css.parse(cssCode);
+        let cssObject = cssParser.parse(cssCode);
 
-        Code.expect(cssObject.type).to.be.equal('stylesheet');
+        Code.expect(cssObject.type).to.equal('stylesheet');
 
         /* Testing if methods have been added */
         Code.expect(cssObject.stylesheet.rules[0].compare).to.be.a.function();
@@ -49,12 +51,12 @@ Lab.experiment('Testing CSS Module', () => {
         Code.expect(cssObject.stylesheet.rules[0].declarations[0].compare).to.be.a.function();
 
 
-        Code.expect(Css.stringify(cssObject, { compress: true })).to.be.equal(cssCode);
+        Code.expect(cssParser.stringify(cssObject, { compress: true })).to.be.equal(cssCode);
 
 
-        cssObject = Css.parse(cssCode, { silent : true });
+        cssObject = cssParser.parse(cssCode, { silent : true });
         Code.expect(cssObject.type).to.be.equal('stylesheet');
-        Code.expect(Css.stringify(cssObject)).to.be.equal('h2 {\n' +
+        Code.expect(cssParser.stringify(cssObject)).to.be.equal('h2 {\n' +
             '  width: 100px;\n' +
             '}');
         done();
@@ -65,11 +67,23 @@ Lab.experiment('Testing CSS Module', () => {
         const css = Fs.readFileSync('./test/file/css/stylesheet.css', 'utf8');
         const expectedCss = Fs.readFileSync('./test/file/css/expected-stylesheet.css', 'utf8');
 
-        const processedCss = Css.stringify(Css.process(css), { compress : true });
+        const processedCss = cssParser.stringify(cssParser.process(css), { compress : true });
 
         Code.expect(processedCss).to.be.equal(expectedCss);
         done();
     });
+
+    Lab.test('It should throw an error if the input is not a Css file', (done) => {
+
+        Code.expect(() => {
+
+            const notCssCode = 'Not a Css code';
+            cssParser.process(notCssCode);
+        }).to.throw();
+
+        done();
+    });
+
 });
 
 exports.lab = Lab;

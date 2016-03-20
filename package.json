@@ -39,6 +39,7 @@
     "form-data": "*",
     "lab": "^10.2.0",
     "nodemon": "^1.x.x",
-    "stream-to-promise": "^1.1.0"
+    "stream-to-promise": "^1.1.0",
+    "yuidoc-bootstrap-theme": "^1.0.6"
   }
 }

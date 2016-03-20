@@ -364,10 +364,6 @@
     "value":""
   },
   {
-    "property":"@font-face",
-    "value":""
-  },
-  {
     "property":"font-family",
     "value":""
   },
@@ -405,10 +401,6 @@
   },
   {
     "property":"justify-content",
-    "value":""
-  },
-  {
-    "property":"@keyframes",
     "value":""
   },
   {
@@ -465,10 +457,6 @@
   },
   {
     "property":"max-width",
-    "value":""
-  },
-  {
-    "property":"@media",
     "value":""
   },
   {
