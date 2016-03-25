@@ -51,12 +51,12 @@ Lab.experiment('Testing CSS Module', () => {
         Code.expect(cssObject.stylesheet.rules[0].declarations[0].compare).to.be.a.function();
 
 
-        Code.expect(cssParser.stringify(cssObject, { compress: true })).to.be.equal(cssCode);
+        Code.expect(cssParser.stringify(cssObject, { compress: true })).to.equal(cssCode);
 
 
         cssObject = cssParser.parse(cssCode, { silent : true });
-        Code.expect(cssObject.type).to.be.equal('stylesheet');
-        Code.expect(cssParser.stringify(cssObject)).to.be.equal('h2 {\n' +
+        Code.expect(cssObject.type).to.equal('stylesheet');
+        Code.expect(cssParser.stringify(cssObject)).to.equal('h2 {\n' +
             '  width: 100px;\n' +
             '}');
         done();
@@ -69,7 +69,7 @@ Lab.experiment('Testing CSS Module', () => {
 
         const processedCss = cssParser.stringify(cssParser.process(css), { compress : true });
 
-        Code.expect(processedCss).to.be.equal(expectedCss);
+        Code.expect(processedCss).to.equal(expectedCss);
         done();
     });
 

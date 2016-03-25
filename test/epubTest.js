@@ -9,16 +9,43 @@ const Epub = require('../lib/epub.js');
 
 Lab.experiment('Testing the EPUB parser', () => {
 
+    Lab.test('Testing Epub file modification and saving', (done) => {
+
+        const epub = new Epub('./test/file/book/book.epub');
+
+        epub.on('end', () => {
+
+            epub.setFile('item30', 'Hello');
+            epub.saveEpub('./test/file/book/book2.epub');
+            const epub2 = new Epub('./test/file/book/book2.epub');
+
+            epub2.on('end', () => {
+
+                epub2.getFile('item30', (error, data) => {
+
+                    Code.expect(error).to.not.exist();
+                    Code.expect(data.toString()).to.equal('Hello');
+                    done();
+                });
+            });
+
+            epub2.parse();
+        });
+
+        epub.parse();
+
+    });
+
     Lab.test('Testing CSS getters', (done) => {
 
         const epub = new Epub('./test/file/book/book.epub');
         epub.on('end', () => {
 
-            Code.expect(epub.getCssCount()).to.be.equal(3);
+            Code.expect(epub.getCssCount()).to.equal(3);
             epub.getCSSFiles( (err, cssFiles) => {
 
                 Code.expect(err).to.not.exist();
-                Code.expect(cssFiles.length).to.be.equal(3);
+                Code.expect(cssFiles.length).to.equal(3);
 
                 epub.getLargestCSS( (err, cssFile) => {
 
@@ -27,7 +54,7 @@ Lab.experiment('Testing the EPUB parser', () => {
                     let css;
                     for (css in cssFiles) {
                         Code.expect(cssFiles[css]['media-type']).to.be.equal('text/css');
-                        Code.expect(cssFile.data.length).to.be.at.least(cssFiles[css].data.length);
+                        Code.expect(cssFile.data.length).to.at.least(cssFiles[css].data.length);
                     }
                     Code.expect(cssFile.href).to.equal('19033/0.css');
                     Code.expect(cssFile['media-type']).to.equal('text/css');

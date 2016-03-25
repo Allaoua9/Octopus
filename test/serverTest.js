@@ -14,19 +14,49 @@ Lab.experiment('Testing the server and the routes', () => {
 
     Lab.test('Server should be started', (done) => {
 
-        Code.expect(server.info.started).to.be.not.equal(0);
+        Code.expect(server.info.started).to.not.equal(0);
         Code.expect(server.info.port).to.equal(8888);
         Code.expect(server.info.protocol).to.equal('http');
         done();
     });
+
+    /*Lab.test('It Should upload Epub file and save it in a temporary folder and return information about the epub to the user', () => {
+
+        const fileStream = Fs.createReadStream('./test/file/book/book.epub');
+        /!* Creating a FormData object*!/
+        const form = new FormData();
+        form.append('book', fileStream);
+
+        StreamToPromise(form).then((payload) => {
+
+            const options = {
+                method: 'POST',
+                url: '/uploadepub',
+                headers : form.getHeaders(),
+                payload : payload
+            };
+
+            server.inject(options, (response) => {
+
+                Code.expect(response.result.success).to.equal(true);
+                Code.expect(response.result.filename).to.equal('book1.epub');
+                Code.expect(response.result.id).to.exist();
+                Code.expect(response.result.route).to.exist();
+                Code.expect(response.result.content.cssFiles.length).to.equal(3);
+                Code.expect(response.result.content.imageFiles.length).to.equal(28);
+                Code.expect(response.result.content.xhtmlFiles.length).to.equal(1);
+                done();
+            });
+        });
+    });*/
 
     Lab.test('Testing /watermark route handler with valid input', (done) => {
 
         const fileStream = Fs.createReadStream('./test/file/book/book1.epub');
         /* Creating a FormData object*/
         const form = new FormData();
-        form.append('transactionID', 'A3DF2E');
-        form.append('authorID', 'A7DF1B');
+        form.append('clientID', '123456');
+        form.append('ownership', 'A7DF1B');
         form.append('book', fileStream);
 
         /* Converting the FormData into a Promise */
@@ -41,8 +71,8 @@ Lab.experiment('Testing the server and the routes', () => {
 
             server.inject(options, (response) => {
 
-                Code.expect(response.result.success).to.be.equal(true);
-                Code.expect(response.result.filename).to.be.equal('book1.epub');
+                Code.expect(response.result.success).to.equal(true);
+                Code.expect(response.result.filename).to.equal('book1.epub');
                 done();
             });
         });
@@ -53,8 +83,8 @@ Lab.experiment('Testing the server and the routes', () => {
         const fileStream = Fs.createReadStream('./test/file/book/book.epub');
         /* Creating a FormData object*/
         const form = new FormData();
-        form.append('transactionID', 'alert()');
-        form.append('authorID', 'A2');
+        form.append('clientID', 'alert()');
+        form.append('ownership', 'A2');
         form.append('book', fileStream);
 
         /* Converting the FormData into a Promise */
@@ -80,8 +110,8 @@ Lab.experiment('Testing the server and the routes', () => {
         const fileStream = Fs.createReadStream('./test/file/book/invalidFile');
         /* Creating a FormData object*/
         const form = new FormData();
-        form.append('transactionID', 'A2E1');
-        form.append('authorID', 'A2');
+        form.append('clientID', '1234');
+        form.append('ownership', 'A2');
         form.append('book', fileStream);
 
         /* Converting the FormData into a Payload */
@@ -98,7 +128,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
                 Code.expect(response.result.error).to.exist();
                 Code.expect(response.result.statusCode).to.equal(400);
-                Code.expect(response.result.message).to.equal('Invalid file type : Please provide an EPUB document.');
+                Code.expect(response.result.message).to.equal('Invalid EPUB file');
                 done();
             });
         });

@@ -19,7 +19,7 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         const css = Fs.readFileSync('./test/file/css/stylesheet.css', 'utf8');
         const cssObject = cssParser.process(css);
         const n = cssWatermarker._embeddingCapacity(cssObject);
-        Code.expect(n).to.be.equal(6);
+        Code.expect(n).to.equal(6);
         done();
     });
 
@@ -29,7 +29,7 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         let cssObject = cssParser.process(css);
         const size = 12;
         cssObject = cssWatermarker._increaseCapacity(cssObject, size);
-        Code.expect(cssWatermarker._embeddingCapacity(cssObject)).to.be.at.least(size);
+        Code.expect(cssWatermarker._embeddingCapacity(cssObject)).to.at.least(size);
         done();
     });
 
@@ -37,11 +37,11 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
 
         const values = [2, 3, 1, 7];
         let result = cssWatermarker._productTable(values, 2);
-        Code.expect(result).to.be.equal(7);
+        Code.expect(result).to.equal(7);
         result = cssWatermarker._productTable(values, 3);
-        Code.expect(result).to.be.equal(1);
+        Code.expect(result).to.equal(1);
         result = cssWatermarker._productTable(values, 0);
-        Code.expect(result).to.be.equal(21);
+        Code.expect(result).to.equal(21);
         done();
     });
 
@@ -56,10 +56,10 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         const cssObject = new Css.CssObject([rule1, rule2]);
 
         const I = cssWatermarker._processLexicographicOrders(cssObject, 3);
-        Code.expect(I.length).to.be.equal(3);
-        Code.expect(I[0]).to.be.equal(0);
-        Code.expect(I[1]).to.be.equal(1);
-        Code.expect(I[2]).to.be.equal(1);
+        Code.expect(I.length).to.equal(3);
+        Code.expect(I[0]).to.equal(0);
+        Code.expect(I[1]).to.equal(1);
+        Code.expect(I[2]).to.equal(1);
         done();
     });
 
@@ -88,13 +88,13 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         order = cssWatermarker._getLexicographicOrder(rules);
         Code.expect(order).to.equal(1);
 
-        Code.expect(rules[0].selectors[0]).to.be.equal('h2');
-        Code.expect(rules[1].selectors[0]).to.be.equal('h1');
+        Code.expect(rules[0].selectors[0]).to.equal('h2');
+        Code.expect(rules[1].selectors[0]).to.equal('h1');
 
         done();
     });
 
-    Lab.test('It should embed a Integer watermark into a css code using lexicographic permutations', (done) => {
+    Lab.test('It should embedWatermark a Integer watermark into a css code using lexicographic permutations', (done) => {
 
         const cssCode = 'h1{display:bloc;margin:10px;}h2{display:inline;margin:20px;width:100px;}';
         let cssWtmk = cssWatermarker.embedWatermark(cssCode, 3);
@@ -111,7 +111,7 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         Code.expect(watermark).to.equal(0);
 
         cssWtmk = cssWatermarker.embedWatermark(cssCode, 100000000000);
-        Code.expect(cssWtmk.length).to.be.at.above(cssCode.length);
+        Code.expect(cssWtmk.length).above(cssCode.length);
         watermark = cssWatermarker.extractWatermark(cssWtmk);
         Code.expect(watermark).to.equal(100000000000);
         done();
