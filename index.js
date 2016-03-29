@@ -5,12 +5,15 @@
 
 const Hapi = require('hapi');
 const Routes = require('./routes/watermarkRoutes.js');
+const Inert = require('inert');
 
 const server = new Hapi.Server();
 
 server.connection({
     port: 8888
 });
+
+server.register(Inert, () => { });
 
 server.register(Routes, (err) => {
 

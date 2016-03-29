@@ -28,12 +28,9 @@
     "epub": "^0.1.6",
     "hapi": "^13.2.1",
     "inert": "^3.2.0",
-    "is-epub": "^1.0.0",
     "joi": "^8.0.4",
     "jszip": "^2.5.0",
-    "mathjs": "^3.0.0",
-    "read-chunk": "^1.0.1",
-    "temp": "^0.8.3"
+    "mathjs": "^3.0.0"
   },
   "devDependencies": {
     "code": "^2.1.0",

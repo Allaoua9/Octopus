@@ -10,25 +10,75 @@ const Fs = require('fs');
 
 Lab.experiment('Testing the watermark embder: ', () => {
 
+    const path = './test/file/book/book.epub';
+    const watermarker = new EpubWatermarker();
+    let watermarkedEpubData = null;
+
     Lab.test('It Should create a watermarked epub file given a watermark and a cover epub file', (done) => {
 
-        const path = './test/file/book/book.epub';
-        const watermark = {
-            clientID: '123456',
-            ownership: 'A3BDE1C2'
+        const watermarks = {
+            cssWatermarks: [
+                {
+                    id: 'item30',
+                    watermark: 123430
+                },
+                {
+                    id: 'item31',
+                    watermark: 123431
+                }
+            ]
         };
-        const newPath = './test/file/book/book-watermarked.epub';
 
-        const watermarker = new EpubWatermarker();
+        Fs.readFile(path, (err, data) => {
 
-        watermarker.embedWatermark(path, watermark, newPath, (err) => {
+            if (!err) {
+                watermarker.embedWatermark(data, watermarks, (err, watermarkedData) => {
+
+                    Code.expect(err).to.not.exist();
+                    Code.expect(Buffer.isBuffer(watermarkedData)).to.be.true();
+                    watermarkedEpubData = watermarkedData;
+                    done();
+                });
+            }
+        });
+    });
+
+    Lab.test('It should extract the watermark from the epub', (done) => {
+
+        const fileIDs = {
+            cssIDs: ['item30', 'item31']
+        };
+
+        watermarker.extractWatermark(watermarkedEpubData, fileIDs, (err, watermarks) => {
 
             Code.expect(err).to.not.exist();
-            Fs.access(newPath, Fs.F_OK, (err) => {
+            Code.expect(watermarks.cssWatermarks[0].watermark).to.equal(123430);
+            Code.expect(watermarks.cssWatermarks[1].watermark).to.equal(123431);
+            done();
+        });
+    });
 
-                Code.expect(err).to.not.exist();
-                done();
-            });
+    Lab.test('It Should throw an error when a file Id does not exist', (done) => {
+
+        const watermarks = {
+            cssWatermarks: [
+                {
+                    id: 'item999',
+                    watermark: 1234
+                }
+            ]
+        };
+
+        Fs.readFile(path, (err, data) => {
+
+            if (!err) {
+                watermarker.embedWatermark(data, watermarks, (err, watermarkedData) => {
+
+                    Code.expect(err).to.exist();
+                    Code.expect(watermarkedData).to.be.null();
+                    done();
+                });
+            }
         });
     });
 });
