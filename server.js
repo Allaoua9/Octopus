@@ -8,9 +8,10 @@ const Routes = require('./routes/watermarkRoutes.js');
 const Inert = require('inert');
 
 const server = new Hapi.Server();
+const port = process.env.port || 8888;
 
 server.connection({
-    port: 8888
+    port: port
 });
 
 server.register(Inert, () => { });
