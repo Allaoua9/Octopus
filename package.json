@@ -2,9 +2,8 @@
   "name": "octopus",
   "version": "0.0.1",
   "description": "An api for watermarking EPUB files",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
     "test": "lab -c -C"
   },
   "repository": {

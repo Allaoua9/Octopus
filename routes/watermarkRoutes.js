@@ -49,6 +49,14 @@ exports.register = function (server, options, next) {
                     },
                     handler: WatermarkHandler.extractWatermarkHandler
                 }
+            },
+            {
+                method: 'GET',
+                path: '/',
+                handler: (request, reply) => {
+
+                    reply('Hello');
+                }
             }
         ]);
 

@@ -5,7 +5,7 @@
 
 const Lab = require('lab').script();
 const Code = require('code');
-const server = require('../index.js').server;
+const server = require('../server.js').server;
 const Fs = require('fs');
 const FormData = require('form-data');
 const StreamToPromise = require('stream-to-promise');
