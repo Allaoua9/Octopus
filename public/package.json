@@ -1,12 +1,7 @@
 {
-  "name": "octopus",
+  "name": "octopus-client",
   "version": "0.0.1",
   "description": "An api for watermarking EPUB files",
-  "main": "server.js",
-  "scripts": {
-    "start": "nodemon server.js",
-    "test": "lab -c -C"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/allaoua9/Octopus.git"
@@ -22,24 +17,22 @@
   },
   "homepage": "https://github.com/allaoua9/Octopus#readme",
   "dependencies": {
-    "boom": "^3.1.2",
-    "clean-css": "^3.4.10",
-    "css": "^2.2.1",
-    "epub": "^0.1.6",
-    "hapi": "^13.2.1",
-    "inert": "^3.2.0",
-    "joi": "^8.0.4",
-    "jszip": "^2.5.0",
-    "mathjs": "^3.0.0"
+    "angular": "^1.5.3",
+    "angular-animate": "^1.5.3",
+    "angular-cookies": "^1.5.3",
+    "angular-mocks": "^1.5.3",
+    "angular-resource": "^1.5.3",
+    "angular-route": "^1.5.3",
+    "angular-sanitize": "^1.5.3",
+    "angular-touch": "^1.5.3",
+    "angular-ui-bootstrap": "^1.2.5",
+    "bootstrap": "^3.3.6"
   },
   "devDependencies": {
-    "code": "^2.1.0",
+    "eslint": "^2.5.3",
     "eslint-config-angular": "^0.5.0",
     "eslint-plugin-angular": "^1.0.0",
-    "form-data": "*",
-    "lab": "^10.2.0",
-    "nodemon": "^1.x.x",
-    "stream-to-promise": "^1.1.0",
-    "yuidoc-bootstrap-theme": "^1.0.6"
+    "grunt": "^0.4.5",
+    "jasmine": "^2.4.1"
   }
 }

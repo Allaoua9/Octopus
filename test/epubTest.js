@@ -56,7 +56,7 @@ Lab.experiment('Testing the EPUB parser', () => {
             const epub = new Epub(data);
             epub.on('end', () => {
 
-                const metadata = epub.getMetaData();
+                const metadata = epub.getFilesMetaData();
                 Code.expect(metadata.cssFiles.length).to.equal(3);
                 Code.expect(metadata.imageFiles.length).to.equal(28);
                 Code.expect(metadata.xhtmlFiles.length).to.equal(1);

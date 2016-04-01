@@ -6,8 +6,17 @@
 const Hapi = require('hapi');
 const Routes = require('./routes/watermarkRoutes.js');
 const Inert = require('inert');
+const Path = require('path');
 
-const server = new Hapi.Server();
+const server = new Hapi.Server({
+    connections: {
+        routes: {
+            files: {
+                relativeTo: Path.join(__dirname, 'public')
+            }
+        }
+    }
+});
 const port = process.env.port || 8888;
 
 server.connection({

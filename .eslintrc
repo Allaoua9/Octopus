@@ -1,3 +1,4 @@
 {
-  "extends": "eslint-config-hapi"
+  "extends": "eslint-config-hapi",
+  "root": true
 }

@@ -22,12 +22,17 @@ exports.register = function (server, options, next) {
                     validate : {
                         payload: SchemaJOI.uploadBook
                     },
-                    handler: WatermarkHandler.bookUploadHandler
+                    handler: WatermarkHandler.epubUploadHandler
                 }
             },
             {
+                method: 'GET',
+                path: '/epub/{epubID}',
+                handler: WatermarkHandler.epubHandler
+            },
+            {
                 method: 'POST',
-                path : '/watermark/{id}',
+                path : '/watermark/{epubID}',
                 config : {
                     validate : {
                         payload: SchemaJOI.watermarkBook
@@ -37,12 +42,12 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/getepub/{id}',
+                path: '/getepub/{epubID}',
                 handler: WatermarkHandler.getEpubFile
             },
             {
                 method: 'POST',
-                path: '/extractwatermark/{id}',
+                path: '/extractwatermark/{epubID}',
                 config: {
                     validate: {
                         payload: SchemaJOI.extractWatermark
@@ -52,10 +57,18 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/',
-                handler: (request, reply) => {
-
-                    reply('Hello');
+                path: '/epub/{epubID}/{itemID}',
+                handler: WatermarkHandler.getEpubItem
+            },
+            {
+                method: 'GET',
+                path: '/{param*}',
+                handler: {
+                    directory: {
+                        path: '.',
+                        redirectToSlash: true,
+                        index: true
+                    }
                 }
             }
         ]);

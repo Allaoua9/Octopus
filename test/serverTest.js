@@ -13,6 +13,7 @@ const StreamToPromise = require('stream-to-promise');
 Lab.experiment('Testing the server and the routes', () => {
 
     let watermarkedEpubId;
+    let epubId;
 
     Lab.test('Server should be started', (done) => {
 
@@ -22,7 +23,7 @@ Lab.experiment('Testing the server and the routes', () => {
         done();
     });
 
-    Lab.test('It Should upload Epub file and save it in a temporary folder and return information about the epub to the user', (done) => {
+    Lab.test('It Should upload Epub file and save it in a temporary folder and return the epub identifier to the user', (done) => {
 
         const fileStream = Fs.createReadStream('./test/file/book/book.epub');
         /* Creating a FormData object*/
@@ -41,14 +42,65 @@ Lab.experiment('Testing the server and the routes', () => {
             server.inject(options, (response) => {
 
                 Code.expect(response.result.success).to.equal(true);
-                Code.expect(response.result.filename).to.equal('book.epub');
                 Code.expect(response.result.id).to.exist();
+                epubId = response.result.id;
+                /*Code.expect(response.result.filename).to.equal('book.epub');
                 Code.expect(response.result.content.cssFiles.length).to.equal(3);
                 Code.expect(response.result.content.imageFiles.length).to.equal(28);
-                Code.expect(response.result.content.xhtmlFiles.length).to.equal(1);
+                Code.expect(response.result.content.xhtmlFiles.length).to.equal(1);*/
                 done();
             });
         });
+    });
+
+    Lab.test('It should get metadata about the epub file', (done) => {
+
+        const options = {
+            method: 'GET',
+            url: '/epub/' + epubId
+        };
+
+        server.inject(options, (response) => {
+
+            Code.expect(response.result.id).to.equal(epubId);
+            Code.expect(response.result.image).to.equal('/getItem/item1');
+            Code.expect(response.result.title).to.equal('Alice\'s Adventures in Wonderland');
+            Code.expect(response.result.author).to.equal('Lewis Carroll');
+            Code.expect(response.result.language).to.equal('en');
+            Code.expect(response.result.data).to.equal('2006-08-12');
+            Code.expect(response.result.subject).to.equal('Fantasy');
+            done();
+        });
+    });
+
+    Lab.test('It Should get an item from the epub file', (done) => {
+
+        const options = {
+            method: 'GET',
+            url: '/epub/' + epubId + '/' + 'item1'
+        };
+
+        server.inject(options, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+
+    });
+
+    Lab.test('It Should respond with 404 not found', (done) => {
+
+        const options = {
+            method: 'GET',
+            url: '/epub/' + epubId + '/' + 'item999'
+        };
+
+        server.inject(options, (response) => {
+
+            Code.expect(response.statusCode).to.equal(404);
+            done();
+        });
+
     });
 
     Lab.test('Testing /watermark route handler with valid input', (done) => {

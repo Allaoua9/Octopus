@@ -1,0 +1,7 @@
+{
+  "extends": "angular",
+  "root": true,
+  "rules": {
+    "angular/di": [2,"array"]
+  }
+}
