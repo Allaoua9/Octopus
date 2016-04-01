@@ -11,7 +11,7 @@ exports.register = function (server, options, next) {
         [
             {
                 method: 'POST',
-                path: '/uploadepub',
+                path: '/epub/upload',
                 config: {
                     payload : {
                         output : 'stream',
@@ -32,7 +32,7 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'POST',
-                path : '/watermark/{epubID}',
+                path : '/epub/watermark/{epubID}',
                 config : {
                     validate : {
                         payload: SchemaJOI.watermarkBook
@@ -42,12 +42,12 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/getepub/{epubID}',
+                path: '/epub/download/{epubID}',
                 handler: WatermarkHandler.getEpubFile
             },
             {
                 method: 'POST',
-                path: '/extractwatermark/{epubID}',
+                path: '/epub/extractwatermark/{epubID}',
                 config: {
                     validate: {
                         payload: SchemaJOI.extractWatermark
@@ -57,7 +57,7 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/epub/{epubID}/{itemID}',
+                path: '/epub/{epubID}/item/{itemID}',
                 handler: WatermarkHandler.getEpubItem
             },
             {

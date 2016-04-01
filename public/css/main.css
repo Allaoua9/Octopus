@@ -19,8 +19,10 @@ body {
 }
 
 .epub-upload {
+    position: relative;
+    display: flex;
+    align-items: center;
     text-align: center;
-    padding-top: 200px;
 }
 
 .epub-upload > .btn-upload {

@@ -34,7 +34,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
             const options = {
                 method: 'POST',
-                url: '/uploadepub',
+                url: '/epub/upload',
                 headers : form.getHeaders(),
                 payload : payload
             };
@@ -63,11 +63,11 @@ Lab.experiment('Testing the server and the routes', () => {
         server.inject(options, (response) => {
 
             Code.expect(response.result.id).to.equal(epubId);
-            Code.expect(response.result.image).to.equal('/getItem/item1');
+            Code.expect(response.result.image).to.equal('item1');
             Code.expect(response.result.title).to.equal('Alice\'s Adventures in Wonderland');
             Code.expect(response.result.author).to.equal('Lewis Carroll');
             Code.expect(response.result.language).to.equal('en');
-            Code.expect(response.result.data).to.equal('2006-08-12');
+            Code.expect(response.result.date).to.equal('2006-08-12');
             Code.expect(response.result.subject).to.equal('Fantasy');
             done();
         });
@@ -77,7 +77,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
         const options = {
             method: 'GET',
-            url: '/epub/' + epubId + '/' + 'item1'
+            url: '/epub/' + epubId + '/item/' + 'item1'
         };
 
         server.inject(options, (response) => {
@@ -92,7 +92,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
         const options = {
             method: 'GET',
-            url: '/epub/' + epubId + '/' + 'item999'
+            url: '/epub/' + epubId + '/item/' + 'item999'
         };
 
         server.inject(options, (response) => {
@@ -115,7 +115,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
             options = {
                 method: 'POST',
-                url: '/uploadepub',
+                url: '/epub/upload',
                 headers : form.getHeaders(),
                 payload : payload
             };
@@ -125,7 +125,7 @@ Lab.experiment('Testing the server and the routes', () => {
                 const epubID = uploadResponse.result.id;
                 options = {
                     method: 'POST',
-                    url: '/watermark/' + epubID.toString(),
+                    url: '/epub' + '/watermark/' + epubID,
                     payload : {
                         watermarks: {
                             cssWatermarks: [
@@ -153,10 +153,10 @@ Lab.experiment('Testing the server and the routes', () => {
 
         const options = {
             method: 'POST',
-            url: '/extractwatermark/' + watermarkedEpubId,
+            url: '/epub' + '/extractwatermark/' + watermarkedEpubId,
             payload: {
                 fileIDs : {
-                    cssIDs: [ 'item30' ]
+                    cssIDs: ['item30']
                 }
             }
         };

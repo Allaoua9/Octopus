@@ -23,8 +23,8 @@ angular
                         controller: 'EpubUploadController',
                         controllerAs: 'epubUpload'
                     })
-                    .when('/epub/:epubid', {
-                        templateUrl: '../view/epubdetails.html',
+                    .when('/epub/:epubID', {
+                        templateUrl: '../views/epub.html',
                         controller: 'EpubController',
                         controllerAs: 'epubCtrl'
                     })
@@ -33,4 +33,14 @@ angular
                     })
             }
         ]
-    );
+    )
+    .directive('octopusError', function () {
+
+        return {
+            restrict: 'E',
+            scope: {
+                error : '=error'
+            },
+            templateUrl: '../views/error.html'
+        }
+    });

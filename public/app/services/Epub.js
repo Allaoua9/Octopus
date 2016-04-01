@@ -5,15 +5,16 @@
 
 angular
     .module('EpubServices',[
-        'ngFileUpload'
+        'ngFileUpload',
+        'restangular'
     ])
     .constant('API_ROUTES', {
-        UPLOAD_EPUB: '/uploadepub',
-        GET_EPUB: '/getepub'
+        UPLOAD_EPUB: '/epub/upload',
+        DOWNLOAD_EPUB: '/epub/download'
     })
-    .factory('Epub', [ '$http', 'Upload', 'API_ROUTES',
+    .factory('Epub', [ '$http', 'Upload', 'Restangular', 'API_ROUTES',
 
-        function ($http, Upload, API_ROUTES) {
+        function ($http, Upload, Restangular, API_ROUTES) {
 
             var epub = {};
 
@@ -28,8 +29,13 @@ angular
             };
 
             epub.getEpub = function (fileID, success, error) {
-                $http.get(API_ROUTES.GET_EPUB)
+                $http.get(API_ROUTES.DOWNLOAD_EPUB)
                     .then(success, error);
+            };
+
+            epub.getEpubMetaData = function (epubID, success, error) {
+                epub = Restangular.one('epub', epubID);
+                epub.get().then(success, error);
             };
 
             return epub;

@@ -1,0 +1,12 @@
+.epub-details {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.epub-details .book-image {
+    width: 240px;
+    height: 310px;
+    background: center, no-repeat;
+    background-size: contain;
+}

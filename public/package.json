@@ -26,7 +26,9 @@
     "angular-sanitize": "^1.5.3",
     "angular-touch": "^1.5.3",
     "angular-ui-bootstrap": "^1.2.5",
-    "bootstrap": "^3.3.6"
+    "bootstrap": "^3.3.6",
+    "restangular": "^1.5.2",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "eslint": "^2.5.3",
