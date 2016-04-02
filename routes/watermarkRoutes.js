@@ -17,7 +17,8 @@ exports.register = function (server, options, next) {
                         output : 'stream',
                         parse : 'true',
                         allow : 'multipart/form-data',
-                        maxBytes: 10485760
+                        maxBytes: 10485760,
+                        timeout: 300000
                     },
                     validate : {
                         payload: SchemaJOI.uploadBook
