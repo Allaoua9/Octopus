@@ -5,8 +5,10 @@
 }
 
 .epub-details .book-image {
-    width: 240px;
-    height: 310px;
+    width: 300px;
+    height: 400px;
     background: center, no-repeat;
-    background-size: contain;
+    background-size: cover;
+
+    border: 1px solid lightgray;
 }

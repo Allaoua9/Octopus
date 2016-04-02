@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <div class="book-image" ng-style="{'background-image': 'url(' + epubCtrl.epub.image +')'}">
+                <div class="book-image" ng-style="{'background-image': 'url(' + (epubCtrl.epub.image || '../images/no-image.png') +')'}">
 
                 </div>
             </div>
@@ -12,14 +12,14 @@
                     <div class="col-md-6">
                         <p>Author : {{epubCtrl.epub.author || 'N/A'}}</p>
                         <p>Subject : {{epubCtrl.epub.subject || 'N/A'}} </p>
-                        <p>Date : {{epubCtrl.epub.date || 'N/A'}}</p>
+                        <p>Date : {{(epubCtrl.epub.date | date:'dd/MM/yyyy') || 'N/A'}}</p>
                     </div>
                     <div class="col-md-6">
                         <p>Language : {{epubCtrl.epub.language || 'N/A'}}</p>
                     </div>
                 </div>
                 <p>
-                    Description : {{epubCtrl.epub.description || 'N/A'}}
+                    Description : <span ng-bind-html="epubCtrl.epub.description || 'N/A'"></span>
                 </p>
                 <button class="btn btn-primary">Extract Watermark</button>
                 <button class="btn btn-primary">Embed Watermark</button>

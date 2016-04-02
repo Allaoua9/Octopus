@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <button class="btn btn-primary btn-lg btn-upload" type="file" ngf-select="epubUpload.uploadEpub($file, $invalidFiles)"
-                        accept="*" ngf-max-height="1000" ngf-max-size="10MB">
+                        accept="application/epub+zip" ngf-max-height="1000" ngf-max-size="10MB">
                     Upload Epub
                 </button>
             </div>
@@ -11,4 +11,5 @@
     </div>
 </div>
 
+<octopus-loading load="epubUpload.load" ng-show="epubUpload.load.loading"></octopus-loading>
 <octopus-error error="epubUpload.error" ng-hide="!epubUpload.error"></octopus-error>

@@ -8,6 +8,7 @@ angular
         'ngRoute',
         'ngAnimate',
         'ngTouch',
+        'ngSanitize',
         'ui.bootstrap',
         'EpubControllers'
     ])
@@ -42,5 +43,15 @@ angular
                 error : '=error'
             },
             templateUrl: '../views/error.html'
+        }
+    })
+    .directive('octopusLoading', function () {
+
+        return {
+            restrict: 'E',
+            scope: {
+                load: '='
+            },
+            templateUrl: '../views/loading.html'
         }
     });

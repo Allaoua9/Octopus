@@ -1,0 +1,20 @@
+octopus-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+    align-items: center;
+    background-color: #FFF;
+}
+
+.octopus-progress {
+    text-align: center;
+    margin-top: 30px;
+    color: #4169E1;
+    font-weight: bold;
+}
+
