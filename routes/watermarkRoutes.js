@@ -23,7 +23,10 @@ exports.register = function (server, options, next) {
                     validate : {
                         payload: SchemaJOI.uploadBook
                     },
-                    handler: WatermarkHandler.epubUploadHandler
+                    handler: WatermarkHandler.epubUploadHandler,
+                    timeout: {
+                        socket: 310000
+                    }
                 }
             },
             {
