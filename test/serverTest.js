@@ -67,7 +67,7 @@ Lab.experiment('Testing the server and the routes', () => {
             Code.expect(response.result.title).to.equal('Alice\'s Adventures in Wonderland');
             Code.expect(response.result.author).to.equal('Lewis Carroll');
             Code.expect(response.result.language).to.equal('en');
-            Code.expect(response.result.date).to.equal('2006-08-12');
+            Code.expect(response.result.date.toString()).to.equal((new Date('2006-08-12')).toString());
             Code.expect(response.result.subject).to.equal('Fantasy');
             done();
         });
