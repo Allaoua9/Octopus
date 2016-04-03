@@ -25,17 +25,18 @@ angular
                 if (file) {
 
                     epub.uploadEpub(file,
-                    function (response) {
-                        vm.load.loading = false;
-                        $location.path('/epub/' + response.data.id);
-                    },
-                    function (response) {
-                        vm.error = response.data;
-                    },
-                    function (evt) {
-                        vm.load.loading = true;
-                        vm.load.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-                    });
+                        function (response) {
+                            $location.path('/epub/' + response.data.id);
+                        },
+                        function (response) {
+                            vm.load.loading = false;
+                            vm.error = response.data;
+                        },
+                        function (evt) {
+                            vm.load.loading = true;
+                            vm.load.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                        }
+                    );
                 }
                 else {
                     switch (error[0].$error){
