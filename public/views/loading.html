@@ -6,9 +6,12 @@
                     <div class="arc">
 
                     </div>
-                    <div class="octopus-progress">
-                        {{ load.progress }} %
-                    </div>
+                </div>
+                <div class="octopus-progress" ng-show="load.showProgress">
+                    {{ load.progress }} %
+                </div>
+                <div class="octopus-loading-message" ng-show="load.showMessage">
+                    {{ load.message }}
                 </div>
             </div>
         </div>

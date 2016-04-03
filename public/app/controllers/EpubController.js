@@ -13,17 +13,20 @@ angular
 
             var vm = this;
             vm.error = null;
-            vm.load = {};
-            vm.load.loading = false;
-            vm.load.progress = 0;
-
+            vm.load = {
+                loading: false,
+                progress: 0,
+                showProgress: true,
+                message: 'Uploading...',
+                showMessage: true
+            };
             vm.uploadEpub = function (file, error) {
 
                 if (file) {
 
                     epub.uploadEpub(file,
                     function (response) {
-                        vm.load.progress = false;
+                        vm.load.loading = false;
                         $location.path('/epub/' + response.data.id);
                     },
                     function (response) {
@@ -58,15 +61,21 @@ angular
             vm.epub.id = $routeParams.epubID;
             vm.error = null;
 
+            vm.load = {
+                loading: true,
+                showProgress: false,
+                message: 'Parsing Epub...',
+                showMessage: true
+            };
+
             epubService.getEpubMetaData(vm.epub.id,
                 function (epub) {
+                    vm.load = false;
                     vm.epub = epub;
-                    if (epub.image) {
-                        vm.epub.image = '/epub/' + epub.id + '/item/' + epub.image;
-                    }
                 },
-                function (error) {
-                    vm.error = error;
+                function (response) {
+                   vm.load = false;
+                   vm.error = response.data;
                 }
             );
         }

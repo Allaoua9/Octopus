@@ -18,12 +18,23 @@
                         <p>Language : {{epubCtrl.epub.language || 'N/A'}}</p>
                     </div>
                 </div>
-                <p>
-                    Description : <span ng-bind-html="epubCtrl.epub.description || 'N/A'"></span>
-                </p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            Description : <span ng-bind-html="epubCtrl.epub.description || 'N/A'"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-8">
                 <button class="btn btn-primary">Extract Watermark</button>
                 <button class="btn btn-primary">Embed Watermark</button>
             </div>
         </div>
     </div>
 </section>
+
+<octopus-loading load="epubCtrl.load" ng-show="epubCtrl.load.loading"></octopus-loading>
+<octopus-error error="epubCtrl.error" ng-hide="!epubCtrl.error"></octopus-error>

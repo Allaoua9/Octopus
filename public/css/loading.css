@@ -11,10 +11,14 @@ octopus-loading {
     background-color: #FFF;
 }
 
-.octopus-progress {
+.octopus-progress, .octopus-loading-message {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 0;
     color: #4169E1;
     font-weight: bold;
+}
+
+.octopus-loading-message {
+    margin-top: 10px;
 }
 

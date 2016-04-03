@@ -68,6 +68,23 @@ Lab.experiment('Testing Temporary files mannagement', () => {
             }, 7);
         });
     });
+
+    Lab.test('It should clean up all the temporary directory', (done) => {
+
+        tempFiles.createFile(data, (err, fileID) => {
+
+            Code.expect(err).to.not.exist();
+            tempFiles.cleanAll(() => {
+
+                tempFiles.fileExist(fileID, (exist) => {
+
+                    Code.expect(exist).to.be.false();
+                    done();
+                });
+            });
+
+        });
+    });
 });
 
 
