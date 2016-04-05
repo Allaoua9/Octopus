@@ -1,5 +1,6 @@
-<div class="octopus-zone epub-upload">
-    <div class="container">
+
+<div class="epub-upload">
+    <div class="container" ng-hide="epubUpload.error">
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <button class="btn btn-primary btn-lg btn-upload" type="file" ngf-select="epubUpload.uploadEpub($file, $invalidFiles)"
@@ -9,7 +10,6 @@
             </div>
         </div>
     </div>
+    <octopus-loading load="epubUpload.load" ng-show="epubUpload.load.loading"></octopus-loading>
+    <octopus-error error="epubUpload.error" ng-hide="!epubUpload.error"></octopus-error>
 </div>
-
-<octopus-loading load="epubUpload.load" ng-show="epubUpload.load.loading"></octopus-loading>
-<octopus-error error="epubUpload.error" ng-hide="!epubUpload.error"></octopus-error>

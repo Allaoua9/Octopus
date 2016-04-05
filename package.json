@@ -4,7 +4,7 @@
   "description": "An api for watermarking EPUB files",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "lab -c -C"
   },
   "repository": {

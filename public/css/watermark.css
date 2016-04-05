@@ -1,0 +1,20 @@
+.watermark-view {
+    position: relative;
+    min-height: 100vh;
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+
+octopus-select {
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 300px;
+    border: 1px lightgray solid;
+
+    padding: 10px;
+}
+
+textarea.xhtml-watermark, textarea.image-watermark {
+    height: 150px;
+}

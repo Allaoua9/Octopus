@@ -32,7 +32,12 @@ exports.register = function (server, options, next) {
             {
                 method: 'GET',
                 path: '/epub/{epubID}',
-                handler: WatermarkHandler.epubHandler
+                handler: WatermarkHandler.epubMetaDataHandler
+            },
+            {
+                method: 'GET',
+                path: '/epub/{epubID}/filesmetadata',
+                handler: WatermarkHandler.epubFilesMetaDataHandler
             },
             {
                 method: 'POST',

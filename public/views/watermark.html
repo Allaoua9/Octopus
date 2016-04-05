@@ -1,0 +1,142 @@
+<section class="watermark-view">
+<div class="container" ng-hide="watermarkCtrl.error">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                Css Files
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+
+            <octopus-select selected="watermarkCtrl.selectedCss">
+                <octopus-option ng-repeat="option in watermarkCtrl.watermarks.cssWatermarks" value="option">
+                    <div class="octopus-option-icon" style="background-image: url(../images/cssfile.png);">
+
+                    </div>
+                    <p class="octopus-option-label">{{ option.id }}</p>
+                </octopus-option>
+            </octopus-select>
+
+        </div>
+        <div class="col-md-4">
+
+            <form>
+                <div class="form-group">
+                    <label for="css-watermark">Watermark</label>
+                <textarea name="css-watermark" id="css-watermark" class="form-control css-watermark"
+                          ng-model="watermarkCtrl.selectedCss.watermark">
+                </textarea>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                Image Files
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+
+            <octopus-select selected="watermarkCtrl.selectedImages" multiple>
+                <octopus-option ng-repeat="id in watermarkCtrl.watermarks.imageWatermark.fileIDs" value="id">
+                    <div class="octopus-option-icon"
+                         ng-style="{'background-image': 'url(/epub/' + watermarkCtrl.epubID + '/item/' + id +')'}">
+
+                    </div>
+                    <p class="octopus-option-label">{{ id }}</p>
+                </octopus-option>
+            </octopus-select>
+
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <form>
+                        <div class="form-group">
+                            <label for="image-watermark">Watermark</label>
+                            <textarea name="image-watermark" ng-disabled="(watermarkCtrl.watermarks.imageWatermark.fileIDs.length == 0)"
+                                      id="image-watermark" class="image-watermark form-control"
+                                      ng-model="watermarkCtrl.watermarks.imageWatermark.watermark">
+                            </textarea>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <qr-code qr-code-data="watermarkCtrl.watermarks.imageWatermark.watermark"
+                             refresh-time="1000">
+
+                    </qr-code>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                XHTML Files
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+
+            <octopus-select selected="watermarkCtrl.selectedXhtml" multiple>
+                <octopus-option ng-repeat="id in watermarkCtrl.watermarks.xhtmlWatermark.fileIDs" value="id">
+                    <div class="octopus-option-icon" style="background-image: url(../images/htmlfile.png);">
+
+                    </div>
+                    <p class="octopus-option-label">{{ id }}</p>
+                </octopus-option>
+            </octopus-select>
+
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <form>
+                        <div class="form-group">
+                            <label for="xhtml-watermark">Watermark</label>
+                            <textarea name="xhtml-watermark" id="xhtml-watermark" class="form-control xhtml-watermark"
+                                      ng-disabled="(watermarkCtrl.watermarks.xhtmlWatermark.fileIDs.length == 0)"
+                                      ng-model="watermarkCtrl.watermarks.xhtmlWatermark.watermark">
+                            </textarea>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <qr-code qr-code-data="watermarkCtrl.watermarks.xhtmlWatermark.watermark"
+                             refresh-time="1000">
+
+                    </qr-code>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<octopus-loading load="watermarkCtrl.load" ng-show="watermarkCtrl.load.loading"></octopus-loading>
+<octopus-error error="watermarkCtrl.error" ng-hide="!watermarkCtrl.error"></octopus-error>
+</section>

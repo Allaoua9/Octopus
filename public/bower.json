@@ -1,0 +1,17 @@
+{
+  "name": "octopus-client",
+  "description": "An api for watermarking EPUB files",
+  "main": "index.html",
+  "authors": [
+    "Allaoua Benchikh"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "EPUB",
+    "Watermark"
+  ],
+  "homepage": "https://github.com/Allaoua9/Octopus",
+  "moduleType": [],
+  "private": true,
+  "dependencies": {}
+}

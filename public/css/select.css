@@ -1,0 +1,41 @@
+octopus-select {
+    display: block;
+}
+
+octopus-option {
+    display: inline-block;
+    margin: 5px;
+}
+
+octopus-option .octopus-option-wrapper {
+
+    display: inline-flex;
+    margin: 5px;
+    padding: 5px;
+
+    flex-direction: column;
+    align-items: center;
+
+    box-sizing: border-box;
+}
+
+octopus-option.selected {
+    border: 1px #D8D8D8 solid;
+    background-color: rgba(145, 145, 145, 0.10);
+}
+
+octopus-option.selected .octopus-option-wrapper  .octopus-option-label {
+    color: #2b81af;
+}
+
+octopus-option .octopus-option-wrapper .octopus-option-icon {
+    width: 65px;
+    height: 90px;
+    background: no-repeat center;
+    background-size: contain;
+}
+
+octopus-option .octopus-option-wrapper .octopus-option-label {
+    margin-top: 3px;
+    margin-bottom: 0;
+}

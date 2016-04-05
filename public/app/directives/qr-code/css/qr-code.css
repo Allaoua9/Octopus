@@ -1,0 +1,10 @@
+qr-code, qr-code .qr-code {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
+
+qr-code .qr-code {
+    background: no-repeat center;
+    background-size: contain;
+}

@@ -10,7 +10,10 @@ angular
         'ngTouch',
         'ngSanitize',
         'ui.bootstrap',
-        'EpubControllers'
+        'OctopusError',
+        'OctopusLoading',
+        'EpubControllers',
+        'WatermarkControllers'
     ])
     .config( [ '$routeProvider',
 
@@ -29,29 +32,14 @@ angular
                         controller: 'EpubController',
                         controllerAs: 'epubCtrl'
                     })
+                    .when('/watermark/:epubID', {
+                        templateUrl: '../views/watermark.html',
+                        controller: 'WatermarkController',
+                        controllerAs: 'watermarkCtrl'
+                    })
                     .otherwise({
                         redirectTo: '/home'
                     })
             }
         ]
-    )
-    .directive('octopusError', function () {
-
-        return {
-            restrict: 'E',
-            scope: {
-                error : '=error'
-            },
-            templateUrl: '../views/error.html'
-        }
-    })
-    .directive('octopusLoading', function () {
-
-        return {
-            restrict: 'E',
-            scope: {
-                load: '='
-            },
-            templateUrl: '../views/loading.html'
-        }
-    });
+    );

@@ -63,12 +63,29 @@ Lab.experiment('Testing the server and the routes', () => {
         server.inject(options, (response) => {
 
             Code.expect(response.result.id).to.equal(epubId);
-            Code.expect(response.result.image).to.equal('item1');
+            Code.expect(response.result.image).to.equal('/epub/' + epubId + '/item/' + 'item1');
             Code.expect(response.result.title).to.equal('Alice\'s Adventures in Wonderland');
             Code.expect(response.result.author).to.equal('Lewis Carroll');
             Code.expect(response.result.language).to.equal('en');
             Code.expect(response.result.date.toString()).to.equal((new Date('2006-08-12')).toString());
             Code.expect(response.result.subject).to.equal('Fantasy');
+            done();
+        });
+    });
+
+    Lab.test('It should get metadata about the files contained in the epub', (done) => {
+
+        const options = {
+            method: 'GET',
+            url: '/epub/' + epubId + '/filesmetadata'
+        };
+
+        server.inject(options, (response) => {
+
+            Code.expect(response.result.id).to.equal(epubId);
+            Code.expect(response.result.metadata.cssFiles.length).to.equal(3);
+            Code.expect(response.result.metadata.imageFiles.length).to.equal(28);
+            Code.expect(response.result.metadata.xhtmlFiles.length).to.equal(1);
             done();
         });
     });

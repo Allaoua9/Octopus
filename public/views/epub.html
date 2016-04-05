@@ -1,5 +1,5 @@
 <section class="epub-details">
-    <div class="container">
+    <div class="container" ng-hide="epubCtrl.error">
         <div class="row">
             <div class="col-md-4">
                 <div class="book-image" ng-style="{'background-image': 'url(' + (epubCtrl.epub.image || '../images/no-image.png') +')'}">
@@ -29,12 +29,12 @@
         </div>
         <div class="row">
             <div class="col-md-4 col-md-offset-8">
-                <button class="btn btn-primary">Extract Watermark</button>
-                <button class="btn btn-primary">Embed Watermark</button>
+                <a class="btn btn-primary" href="#/extractwatermark/{{ epubCtrl.epub.id }}">Extract Watermark</a>
+                <a class="btn btn-primary" href="#/watermark/{{ epubCtrl.epub.id }}">Embed Watermark</a>
             </div>
         </div>
     </div>
+    <octopus-loading load="epubCtrl.load" ng-show="epubCtrl.load.loading"></octopus-loading>
+    <octopus-error error="epubCtrl.error" ng-hide="!epubCtrl.error"></octopus-error>
 </section>
 
-<octopus-loading load="epubCtrl.load" ng-show="epubCtrl.load.loading"></octopus-loading>
-<octopus-error error="epubCtrl.error" ng-hide="!epubCtrl.error"></octopus-error>

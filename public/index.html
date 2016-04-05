@@ -4,27 +4,48 @@
     <meta charset="UTF-8">
     <title>Octopus : Epub Watermarking API</title>
 
+    <!--*******************  StyleSheets  ***********************-->
+    <!-- External Stylesheets -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/ui-bootstrap-requirement.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/error.css">
-    <link rel="stylesheet" href="css/epub.css">
-    <link rel="stylesheet" href="css/loading.css">
-    <link rel="stylesheet" href="css/loader-animation.css">
 
+    <!-- Internal Stylesheets-->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/epub.css">
+    <link rel="stylesheet" href="css/watermark.css">
+    <link rel="stylesheet" href="css/select.css">
+    <!-- Internal directives stylesheets -->
+    <link rel="stylesheet" href="app/directives/octopus-error/css/error.css">
+    <link rel="stylesheet" href="app/directives/octopus-loading/css/loading.css">
+    <link rel="stylesheet" href="app/directives/octopus-loading/css/loader-animation.css">
+    <link rel="stylesheet" href="app/directives/qr-code/css/qr-code.css">
+
+
+    <!--********************** Scripts **********************-->
+    <!-- Angular Core Modules -->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
     <script src="node_modules/angular-animate/angular-animate.min.js"></script>
     <script src="node_modules/angular-touch/angular-touch.min.js"></script>
     <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+
+    <!-- Angular external modules-->
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
     <script src="node_modules/ng-file-upload/dist/ng-file-upload-all.min.js"></script>
-
     <script src="node_modules/underscore/underscore-min.js"></script>
     <script src="node_modules/restangular/dist/restangular.min.js"></script>
 
-    <script src="app/services/Epub.js"></script>
-    <script src="app/controllers/EpubController.js"></script>
+    <!-- Internal Directives -->
+    <script src="app/directives/qr-code/QrCode.js"></script>
+    <script src="app/directives/octopus-select/octopusSelect.js"></script>
+    <script src="app/directives/octopus-error/OctopusError.js"></script>
+    <script src="app/directives/octopus-loading/OctopusLoading.js"></script>
+    <!-- Internal Services -->
+    <script src="app/services/EpubServices.js"></script>
+    <script src="app/services/WatermarkServices.js"></script>
+    <!-- Internal Controllers -->
+    <script src="app/controllers/EpubControllers.js"></script>
+    <script src="app/controllers/WatermarkControllers.js"></script>
     <script src="app/app.js"></script>
 </head>
 <body>
@@ -44,7 +65,7 @@
     </div>
 </nav>
 
-<section ng-view class="octopus-main container-fluid">
+<section ng-view class="view-container container-fluid">
 
 </section>
 
