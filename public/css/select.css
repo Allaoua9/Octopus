@@ -39,3 +39,12 @@ octopus-option .octopus-option-wrapper .octopus-option-label {
     margin-top: 3px;
     margin-bottom: 0;
 }
+
+
+octopus-option.ng-enter {
+    animation: 0.5s fadeInRight;
+}
+
+octopus-option.ng-enter-stagger {
+    animation-delay: 0.05s;
+}

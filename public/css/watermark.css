@@ -1,6 +1,6 @@
 .watermark-view {
     position: relative;
-    min-height: 100vh;
+    height: 100vh;
     padding-top: 10px;
     padding-bottom: 30px;
 }

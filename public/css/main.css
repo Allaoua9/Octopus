@@ -15,17 +15,20 @@ body {
     background-color: #f5f5f5;
 }
 
-.octopus-home, .epub-upload-view {
+.octopus-home, .epub-upload {
     height: 100vh;
 }
 
-.epub-upload-view {
+.view-container {
     position: relative;
+}
+
+.epub-upload {
     display: flex;
     align-items: center;
     text-align: center;
 }
 
-.epub-upload-view > .btn-upload {
+.epub-upload > .btn-upload {
     vertical-align: middle;
 }

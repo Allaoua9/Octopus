@@ -1,7 +1,7 @@
 octopus-error {
     position: absolute;
     top: 0;
-    left: 0;
+    bottom: 0;
 
     display: flex;
     width: 100%;
@@ -10,4 +10,16 @@ octopus-error {
     align-items: center;
 
     background-color: white;
+}
+
+octopus-error.ng-hide {
+    opacity: 0;
+}
+
+octopus-error.ng-hide-add {
+    animation: 2s fadeOut;
+}
+
+octopus-error.ng-hide-remove {
+    animation: 2s fadeIn;
 }

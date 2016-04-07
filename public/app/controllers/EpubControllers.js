@@ -12,7 +12,7 @@ angular
         function ($location, epub) {
 
             var vm = this;
-            vm.error = null;
+            vm.error = false;
             vm.load = {
                 loading: false,
                 progress: 0,

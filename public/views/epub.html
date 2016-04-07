@@ -1,5 +1,5 @@
 <section class="epub-details">
-    <div class="container" ng-hide="epubCtrl.error">
+    <div class="container" ng-hide="epubCtrl.error || epubCtrl.load.loading">
         <div class="row">
             <div class="col-md-4">
                 <div class="book-image" ng-style="{'background-image': 'url(' + (epubCtrl.epub.image || '../images/no-image.png') +')'}">
@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    <octopus-loading load="epubCtrl.load" ng-show="epubCtrl.load.loading"></octopus-loading>
-    <octopus-error error="epubCtrl.error" ng-hide="!epubCtrl.error"></octopus-error>
+    <octopus-loading load="epubCtrl.load" ng-show="epubCtrl.load.loading" class="ng-hide"></octopus-loading>
+    <octopus-error error="epubCtrl.error" ng-hide="!epubCtrl.error" class="ng-hide"></octopus-error>
 </section>
 
