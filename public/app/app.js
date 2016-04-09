@@ -39,9 +39,6 @@ angular
                         controller: 'WatermarkController',
                         controllerAs: 'watermarkCtrl'
                     })
-                    .when('/epub/:epubID/downloadandpreview', {
-
-                    })
                     .otherwise({
                         redirectTo: '/home'
                     })
