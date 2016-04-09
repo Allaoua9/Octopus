@@ -41,7 +41,7 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'POST',
-                path : '/epub/watermark/{epubID}',
+                path : '/epub/{epubID}/watermark',
                 config : {
                     validate : {
                         payload: SchemaJOI.watermarkBook
@@ -51,12 +51,12 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/epub/download/{epubID}',
+                path: '/epub/{epubID}/download',
                 handler: WatermarkHandler.getEpubFile
             },
             {
                 method: 'POST',
-                path: '/epub/extractwatermark/{epubID}',
+                path: '/epub/{epubID}/extractwatermark',
                 config: {
                     validate: {
                         payload: SchemaJOI.extractWatermark

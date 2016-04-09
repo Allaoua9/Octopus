@@ -39,13 +39,18 @@ angular
                     $scope.selectedElement = null;
                     this.select = function (selected, element) {
 
-                        if ($scope.selectedElement) {
+                        if ($scope.selectedElement !== null) {
                             $scope.selectedElement.removeClass('selected');
                         }
-                        element.addClass('selected');
-                        $scope.selectedElement = element;
+                        if ($scope.selected !== selected) {
+                            element.addClass('selected');
+                            $scope.selectedElement = element;
+                            $scope.selected = selected;
+                        }
+                        else {
+                            $scope.selected = null;
+                        }
 
-                        $scope.selected = selected;
                         $scope.$apply();
                     };
                 }

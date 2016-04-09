@@ -142,7 +142,7 @@ Lab.experiment('Testing the server and the routes', () => {
                 const epubID = uploadResponse.result.id;
                 options = {
                     method: 'POST',
-                    url: '/epub' + '/watermark/' + epubID,
+                    url: '/epub/' + epubID + '/watermark',
                     payload : {
                         watermarks: {
                             cssWatermarks: [
@@ -170,9 +170,9 @@ Lab.experiment('Testing the server and the routes', () => {
 
         const options = {
             method: 'POST',
-            url: '/epub' + '/extractwatermark/' + watermarkedEpubId,
+            url: '/epub/' + watermarkedEpubId + '/extractwatermark',
             payload: {
-                fileIDs : {
+                ids : {
                     cssIDs: ['item30']
                 }
             }

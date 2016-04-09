@@ -5,16 +5,24 @@
     padding-bottom: 30px;
 }
 
-octopus-select {
+octopus-select .select-scroll {
 
-    overflow-y: scroll;
-    overflow-x: hidden;
+    width: 100%;
     height: 300px;
     border: 1px lightgray solid;
-
-    padding: 10px;
 }
 
 textarea.xhtml-watermark, textarea.image-watermark {
     height: 150px;
+}
+
+.validate-watermark {
+    display: flex;
+
+    width: 100%;
+    margin: 50px;
+    padding: 5px;
+
+    align-items: center;
+    justify-content: center;
 }

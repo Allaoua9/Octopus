@@ -19,23 +19,23 @@ const cssWatermark = Joi.object({
     watermark: Joi.number()
 });
 
-const imageWatermark = Joi.object({
-    id: Joi.string().trim().alphanum(),
-    watermark: Joi.string()
+const imageWatermarks = Joi.object({
+    ids: Joi.array().items(Joi.string().trim()),
+    watermark: Joi.string().trim()
 });
 
-const xhtmlWatermark = Joi.object({
-    id: Joi.string().trim().alphanum(),
-    watermark: Joi.string()
+const xhtmlWatermarks = Joi.object({
+    ids: Joi.array().items(Joi.string().trim()),
+    watermark: Joi.string().trim()
 });
 
 const watermarks = Joi.object({
     cssWatermarks: Joi.array().items(cssWatermark).optional(),
-    imageWatermarks: Joi.array().items(imageWatermark).optional(),
-    xhtmlWatermarks: Joi.array().items(xhtmlWatermark).optional()
+    imageWatermarks: imageWatermarks.optional(),
+    xhtmlWatermarks: xhtmlWatermarks.optional()
 });
 
-const fileIDs = Joi.object({
+const ids = Joi.object({
     cssIDs: Joi.array().items(Joi.string().trim()).optional(),
     imagesIDs: Joi.array().items(Joi.string().trim()).optional(),
     xhtmlIDs: Joi.array().items(Joi.string().trim()).optional()
@@ -55,9 +55,10 @@ exports.watermarkBook = Joi.object({
 });
 
 exports.extractWatermark = Joi.object({
-    fileIDs: fileIDs
+    ids: ids
 });
 
+// Remove later
 exports.watermarkPayload = Joi.object({
     clientID: clientID,
     ownership: ownership,

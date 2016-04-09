@@ -13,5 +13,7 @@
   "homepage": "https://github.com/Allaoua9/Octopus",
   "moduleType": [],
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "ngScrollable": "ng-scrollable#^0.2.5"
+  }
 }

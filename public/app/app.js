@@ -9,7 +9,9 @@ angular
         'ngAnimate',
         'ngTouch',
         'ngSanitize',
+        'ngMessages',
         'ui.bootstrap',
+        'ngScrollable',
         'OctopusError',
         'OctopusLoading',
         'EpubControllers',
@@ -36,6 +38,9 @@ angular
                         templateUrl: '../views/watermark.html',
                         controller: 'WatermarkController',
                         controllerAs: 'watermarkCtrl'
+                    })
+                    .when('/epub/:epubID/downloadandpreview', {
+
                     })
                     .otherwise({
                         redirectTo: '/home'

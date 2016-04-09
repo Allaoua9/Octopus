@@ -38,6 +38,10 @@ octopus-option .octopus-option-wrapper .octopus-option-icon {
 octopus-option .octopus-option-wrapper .octopus-option-label {
     margin-top: 3px;
     margin-bottom: 0;
+    width: 65px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
 }
 
 
