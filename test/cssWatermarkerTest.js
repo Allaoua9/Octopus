@@ -9,6 +9,8 @@ const CssWatermarker = require('../lib/cssWatermark/cssWatermarker.js');
 const Fs = require('fs');
 const Css = require('../lib/cssWatermark/cssParser.js');
 
+const Mathjs = require('mathjs');
+
 Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
 
     const cssParser = new Css.CssParser();
@@ -19,6 +21,7 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         const css = Fs.readFileSync('./test/file/css/stylesheet.css', 'utf8');
         const cssObject = cssParser.process(css);
         const n = cssWatermarker._embeddingCapacity(cssObject);
+
         Code.expect(n).to.equal(6);
         done();
     });
@@ -51,8 +54,8 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         const declaration2 = new Css.Declaration('margin', '20px');
         const declaration3 = new Css.Declaration('width', '100px');
 
-        const rule1 = new Css.Rule(['h1'], [declaration1, declaration2]);
-        const rule2 = new Css.Rule(['h2'], [declaration1, declaration2, declaration3]);
+        const rule1 = new Css.Rule('rule', ['h1'], [declaration1, declaration2]);
+        const rule2 = new Css.Rule('rule', ['h2'], [declaration1, declaration2, declaration3]);
         const cssObject = new Css.CssObject([rule1, rule2]);
 
         const I = cssWatermarker._processLexicographicOrders(cssObject, 3);
@@ -69,8 +72,8 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         const declaration2 = new Css.Declaration('margin', '20px');
         const declaration3 = new Css.Declaration('width', '100px');
 
-        const rule1 = new Css.Rule(['h1'], [declaration1, declaration2]);
-        const rule2 = new Css.Rule(['h2'], [declaration1, declaration2, declaration3]);
+        const rule1 = new Css.Rule('rule', ['h1'], [declaration1, declaration2]);
+        const rule2 = new Css.Rule('rule', ['h2'], [declaration1, declaration2, declaration3]);
 
 
         rule1.declarations = cssWatermarker._applyLexicographicPermutation(rule1.declarations, 0);
@@ -115,6 +118,18 @@ Lab.experiment('Testing CSS watermark based on lexicographic orders', () => {
         watermark = cssWatermarker.extractWatermark(cssWtmk);
         Code.expect(watermark).to.equal(100000000000);
         done();
+    });
+
+    Lab.test('It should throw error when the css file is too big', (done) => {
+
+        const cssCode = Fs.readFileSync('./test/file/css/core.css', 'utf8');
+
+        try {
+            cssWatermarker.embedWatermark(cssCode, 11);
+        }
+        catch (error) {
+            done();
+        }
     });
 
 });

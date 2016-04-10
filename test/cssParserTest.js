@@ -23,11 +23,11 @@ Lab.experiment('Testing CSS Module', () => {
         Code.expect(declaration.value).to.equal('');
 
         let rule = new Css.Rule();
-        Code.expect(rule.selectors.length).to.equal(0);
-        Code.expect(rule.declarations.length).to.equal(0);
+        Code.expect(rule.selectors).to.not.exist();
+        Code.expect(rule.declarations).to.not.exist();
 
         declaration = new Css.Declaration('width', '100px');
-        rule = new Css.Rule(['h1'], [declaration]);
+        rule = new Css.Rule('rule',['h1'], [declaration]);
         cssObject = new Css.CssObject([rule]);
 
         Code.expect(cssObject.stylesheet.rules[0].selectors[0]).to.equal('h1');
@@ -46,7 +46,7 @@ Lab.experiment('Testing CSS Module', () => {
 
         /* Testing if methods have been added */
         Code.expect(cssObject.stylesheet.rules[0].compare).to.be.a.function();
-        Code.expect(cssObject.stylesheet.rules[0].getStringSelectors).to.be.a.function();
+        Code.expect(cssObject.stylesheet.rules[0].toString).to.be.a.function();
 
         Code.expect(cssObject.stylesheet.rules[0].declarations[0].compare).to.be.a.function();
 
@@ -83,7 +83,6 @@ Lab.experiment('Testing CSS Module', () => {
 
         done();
     });
-
 });
 
 exports.lab = Lab;

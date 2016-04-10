@@ -15,7 +15,7 @@ const book = Joi.object({
 }).unknown().allow();
 
 const cssWatermark = Joi.object({
-    id: Joi.string().trim().alphanum(),
+    id: Joi.string().trim(),
     watermark: Joi.number()
 });
 
