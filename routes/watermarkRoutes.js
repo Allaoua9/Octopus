@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
             },
             {
                 method: 'GET',
-                path: '/epub/{epubID}/download',
+                path: '/epub/{epubID}/download/{param*}',
                 handler: WatermarkHandler.getEpubFile
             },
             {
@@ -68,6 +68,24 @@ exports.register = function (server, options, next) {
                 method: 'GET',
                 path: '/epub/{epubID}/item/{itemID}',
                 handler: WatermarkHandler.getEpubItem
+            },
+            {
+                method: 'GET',
+                path: '/epubreader/{epubID}',
+                handler: {
+                    file: './views/reader/index.html'
+                }
+            },
+            {
+                method: 'GET',
+                path: '/epubreader/{params*}',
+                handler: {
+                    directory: {
+                        path: './views/reader',
+                        redirectToSlash: true,
+                        index: 'index.html'
+                    }
+                }
             },
             {
                 method: 'GET',

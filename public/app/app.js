@@ -15,7 +15,8 @@ angular
         'OctopusError',
         'OctopusLoading',
         'EpubControllers',
-        'WatermarkControllers'
+        'WatermarkControllers',
+        'DownloadAndPreview'
     ])
     .config( [ '$routeProvider',
 
@@ -38,6 +39,11 @@ angular
                         templateUrl: '../views/watermark.html',
                         controller: 'WatermarkController',
                         controllerAs: 'watermarkCtrl'
+                    })
+                    .when('/epub/:epubID/downloadandpreview', {
+                        templateUrl: '../views/downloadandpreview.html',
+                        controller: 'DownloadController',
+                        controllerAs: 'downloadCtrl'
                     })
                     .otherwise({
                         redirectTo: '/home'
