@@ -16,7 +16,7 @@ const book = Joi.object({
 
 const cssWatermark = Joi.object({
     id: Joi.string().trim(),
-    watermark: Joi.number()
+    watermark: Joi.string().hex().max(32)
 });
 
 const imageWatermarks = Joi.object({

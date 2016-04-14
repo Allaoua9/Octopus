@@ -65,12 +65,15 @@ angular
                         );
                     };
 
+                    vm.getQrCode();
+
                     $scope.$watch('qrCodeData', function (newValue, oldValue) {
 
                         if (angular.isDefined(newValue) && newValue !== null && oldValue !== newValue) {
                             vm.getQrCode();
                         }
                     });
+
 
                     return vm;
                 },

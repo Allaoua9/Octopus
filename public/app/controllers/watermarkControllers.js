@@ -122,4 +122,101 @@ angular
                 }
             );
         }]
-    );
+    )
+    .controller('WatermarkExtractionController', [ '$routeParams', '$scope', 'Epub', 'Watermarker',
+
+        function ($routeParams, $scope, epub, watermaker) {
+
+            var vm = this;
+            vm.epubID = $routeParams.epubID;
+            vm.error = null;
+            vm.load = {
+                loading: true,
+                showProgress: false,
+                message: 'Fetching epub files metadata...',
+                showMessage: true
+            };
+
+            vm.watermark = null;
+
+            vm.selectedCss = [ ];
+            vm.selectedImages = [ ];
+            vm.selectedXhtml = [ ];
+
+            /* Form Validation */
+            //TODO Must refactor this by encapsulating it into a directive.
+            $scope.$watchGroup(
+                [
+                    angular.bind(vm, function() {
+
+                        return vm.selectedCss.length;
+                    }),
+                    angular.bind(vm, function() {
+
+                        return vm.selectedImages.length;
+                    }),
+                    angular.bind(vm, function () {
+
+                        return vm.selectedXhtml.length
+                    })
+                ],
+
+                function (newValues) {
+
+                    if (newValues[0] === 0 && newValues[1] === 0 && newValues[2] === 0 ) {
+                        vm.extractForm.$setValidity('selection', false);
+                    }
+                    else {
+                        vm.extractForm.$setValidity('selection', true);
+                    }
+                }
+            );
+
+            vm.extractWatermark = function () {
+
+                var filesIDs = {
+                    cssIDs: vm.selectedCss.map(function (obj) {
+                        return obj.id
+                    }),
+                    imagesIDs: vm.selectedImages.map(function (obj) {
+                        return obj.id
+                    }),
+                    xhtmlIDs: vm.selectedXhtml.map(function (obj) {
+                        return obj.id
+                    })
+                };
+
+                vm.load.message = 'Extracting watermark...';
+                vm.load.loading = true;
+
+                watermaker.extractWatermark(vm.epubID, filesIDs,
+                    function (response) {
+
+                        vm.load.loading = false;
+                        vm.watermark = response.data;
+                    },
+                    function (response) {
+
+                        vm.load.loading = false;
+                        vm.error = response.data;
+                    }
+                );
+            };
+
+            /* Initialising the scope */
+            epub.getFilesMetaData(vm.epubID,
+                function (response) {
+                    /* When metadata are fetched successfully from the server */
+                    vm.load.loading = false;
+                    /* Storing the metadata in case it is needed later*/
+                    vm.metadata = response.metadata;
+                },
+                function (response) {
+
+                    /* Display error when the request for metadata fail */
+                    vm.load.loading = false;
+                    vm.error = response.data;
+                }
+            );
+        }
+    ]);

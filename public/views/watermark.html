@@ -25,7 +25,7 @@
                         <label for="css-watermark">Watermark</label>
 
                         <input type='text' name="cssWatermark" id="css-watermark" class="form-control css-watermark"
-                               ng-model="watermarkCtrl.selectedCss.watermark" pattern="^([a-fA-F\d]+)$|^(\d+)$"
+                               ng-model="watermarkCtrl.selectedCss.watermark" pattern="^([a-fA-F\d]+)$" maxlength="32"
                                ng-disabled="watermarkCtrl.selectedCss == null" ng-required="watermarkCtrl.requireWatermark()">
 
                         <div class="help-block" ng-messages="watermarkForm.cssWatermark.$error">

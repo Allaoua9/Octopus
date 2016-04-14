@@ -148,7 +148,7 @@ Lab.experiment('Testing the server and the routes', () => {
                             cssWatermarks: [
                                 {
                                     id: 'item30',
-                                    watermark: 1234
+                                    watermark: '1234'
                                 }
                             ]
                         }
@@ -181,7 +181,7 @@ Lab.experiment('Testing the server and the routes', () => {
         server.inject(options, (watermarkResponse) => {
 
             Code.expect(watermarkResponse.result.cssWatermarks[0].id).to.equal('item30');
-            Code.expect(watermarkResponse.result.cssWatermarks[0].watermark).to.equal(1234);
+            Code.expect(watermarkResponse.result.cssWatermarks[0].watermark).to.equal('0x1234');
             done();
         });
     });

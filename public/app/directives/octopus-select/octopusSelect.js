@@ -18,9 +18,10 @@ angular
             controller: function ($scope, $element, $attrs) {
 
                 $scope.multiple = 'multiple' in $attrs;
+                $scope.optionElements = [];
+                $scope.optionCollection = [];
 
                 if ($scope.multiple) {
-                    $scope.selectedElement = [];
                     this.select = function (selected, element) {
 
                         var index = $scope.selected.indexOf(selected);
@@ -55,6 +56,38 @@ angular
                     };
                 }
 
+                this.addOptionElement = function (element) {
+
+                    $scope.optionElements.push(element);
+                };
+
+                this.addOption = function (option) {
+
+                    $scope.optionCollection.push(option);
+                };
+
+                this.selectAll = function (value) {
+
+                    if ($scope.multiple) {
+                        if (value === true) {
+                            $scope.optionElements.forEach(function (element) {
+
+                                element.addClass('selected');
+                            });
+
+                            $scope.selected = $scope.optionCollection;
+                        }
+                        else {
+                            $scope.optionElements.forEach(function (element) {
+
+                                element.removeClass('selected');
+                            });
+
+                            $scope.selected = [];
+                        }
+                    }
+                };
+
                 return this;
             },
             controllerAs: 'octopusSelectCtrl'
@@ -73,10 +106,36 @@ angular
             link: function (scope, element, attr, octopusSelectCtrl) {
 
                 scope.octopusSelectCtrl = octopusSelectCtrl;
+                octopusSelectCtrl.addOptionElement(element);
+                octopusSelectCtrl.addOption(scope.value);
+
                 element.bind('click', function () {
 
                     octopusSelectCtrl.select(scope.value, element);
                 });
             }
         };
+    })
+    .directive('octopusSelectAll', function () {
+
+        return {
+            restrict: 'E',
+            require: '^^octopusSelect',
+            scope: {
+                selectAllModel: '=',
+                selectAllName: '@',
+                selectAllId: '@'
+            },
+            template: '<input type="checkbox" ng-model="selectAllModel" name="selectAllName" id="selectAllId">',
+            link: function (scope, element, attr, octopusSelectCtrl) {
+
+                octopusSelectCtrl.selectAll(scope.selectAllModel);
+                scope.$watch('selectAllModel', function (newValue, oldValue) {
+
+                    if (newValue !== oldValue) {
+                        octopusSelectCtrl.selectAll(scope.selectAllModel);
+                    }
+                });
+            }
+        }
     });

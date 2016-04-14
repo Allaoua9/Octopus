@@ -20,11 +20,11 @@ Lab.experiment('Testing the watermark embder: ', () => {
             cssWatermarks: [
                 {
                     id: 'item30',
-                    watermark: 123430
+                    watermark: '123430'
                 },
                 {
                     id: 'item31',
-                    watermark: 123431
+                    watermark: '123431'
                 }
             ]
         };
@@ -52,8 +52,8 @@ Lab.experiment('Testing the watermark embder: ', () => {
         watermarker.extractWatermark(watermarkedEpubData, fileIDs, (err, watermarks) => {
 
             Code.expect(err).to.not.exist();
-            Code.expect(watermarks.cssWatermarks[0].watermark).to.equal(123430);
-            Code.expect(watermarks.cssWatermarks[1].watermark).to.equal(123431);
+            Code.expect(watermarks.cssWatermarks[0].watermark).to.equal('0x123430');
+            Code.expect(watermarks.cssWatermarks[1].watermark).to.equal('0x123431');
             done();
         });
     });
@@ -64,7 +64,7 @@ Lab.experiment('Testing the watermark embder: ', () => {
             cssWatermarks: [
                 {
                     id: 'item999',
-                    watermark: 1234
+                    watermark: '1234'
                 }
             ]
         };

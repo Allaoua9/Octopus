@@ -7,6 +7,8 @@ const Hapi = require('hapi');
 const Routes = require('./routes/watermarkRoutes.js');
 const Inert = require('inert');
 const Path = require('path');
+const OpenCv = require('opencv');
+
 
 const server = new Hapi.Server({
     connections: {
@@ -34,5 +36,11 @@ server.register(Routes, (err) => {
 });
 
 server.start();
+
+OpenCv.readImage('./cover.jpg', function (err, im) {
+
+    im.save('./out.jpg');
+});
+
 
 exports.server = server;

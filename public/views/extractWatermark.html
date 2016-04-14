@@ -1,0 +1,183 @@
+<div class="extract-watermark-view">
+    <div class="container" ng-hide="extractCtrl.error || extractCtrl.load.loading || extractCtrl.watermark">
+        <form name="extractCtrl.extractForm" ng-submit="extractCtrl.extractWatermark()" novalidate>
+
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="form-group">
+                        <label> Css Files </label>
+                        <octopus-select name="selectCss" selected="extractCtrl.selectedCss" multiple>
+                            <div ng-scrollable class="select-scroll">
+                                <octopus-option ng-repeat="cssFile in extractCtrl.metadata.cssFiles" value="cssFile">
+                                    <div class="octopus-option-icon" style="background-image: url(../images/cssfile.png);">
+
+                                    </div>
+                                    <p class="octopus-option-label">{{ cssFile.id }}</p>
+                                </octopus-option>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <octopus-select-all select-all-name="all-css"
+                                                        select-all-id="all-css"
+                                                        select-all-model="extractCtrl.selectAllCss">
+                                    </octopus-select-all>
+                                    Select All
+                                </label>
+                            </div>
+                        </octopus-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+
+                    <div class="form-group">
+                        <label>Image Files</label>
+                        <octopus-select selected="extractCtrl.selectedImages"  multiple>
+                            <div ng-scrollable class="select-scroll">
+                                <octopus-option ng-repeat="imageFile in extractCtrl.metadata.imageFiles" value="imageFile">
+                                    <div class="octopus-option-icon"
+                                         ng-style="{'background-image': 'url(/epub/' + extractCtrl.epubID + '/item/' + imageFile.id +')'}">
+
+                                    </div>
+                                    <p class="octopus-option-label">{{ imageFile.id }}</p>
+                                </octopus-option>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <octopus-select-all select-all-name="all-images"
+                                                        select-all-id="all-images"
+                                                        select-all-model="extractCtrl.selectAllImages">
+                                    </octopus-select-all>
+                                    Select All
+                                </label>
+                            </div>
+                        </octopus-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+
+                    <div class="form-group">
+                        <label>XHTML Files</label>
+                        <octopus-select selected="extractCtrl.selectedXhtml" multiple>
+                            <div ng-scrollable class="select-scroll">
+                                <octopus-option ng-repeat="xhtmlFile in extractCtrl.metadata.xhtmlFiles" value="xhtmlFile">
+                                    <div class="octopus-option-icon" style="background-image: url(../images/htmlfile.png);">
+
+                                    </div>
+                                    <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
+                                </octopus-option>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <octopus-select-all select-all-name="all-xhtml"
+                                                        select-all-id="all-xhtml"
+                                                        select-all-model="extractCtrl.selectAllXhtml">
+                                    </octopus-select-all>
+                                    Select All
+                                </label>
+                            </div>
+                        </octopus-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" ng-show="extractCtrl.extractForm.$invalid">
+                <div class="col-md-offset-3 col-md-6">
+                    <div class="extract-validation form-group" ng-class="{ 'has-error' : extractCtrl.extractForm.$invalid }">
+                        <div class="help-block">
+                            <p><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Select at least one file</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-offset-4 col-md-4">
+                    <div class="validate-watermark">
+                        <button type="submit" class="btn btn-primary" ng-disabled="extractCtrl.extractForm.$invalid">Extract Watermark</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="container" ng-show="extractCtrl.watermark">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3> Extracted Css watermarks </h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th> Index </th>
+                        <th> Css files IDs </th>
+                        <th> Watermark </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="cssWatermark in extractCtrl.watermark.cssWatermarks">
+                        <th> {{ $index }} </th>
+                        <td>{{ cssWatermark.id }}</td>
+                        <td>{{ '0x' + cssWatermark.watermark.substr(2).toUpperCase() }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Extracted Images watermark</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Watermark</h4>
+                <div class="well">
+                    {{ extractCtrl.watermark.imageWatermarks.watermark }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>QrCode</h4>
+                <qr-code qr-code-data="extractCtrl.watermark.imageWatermarks.watermark"
+                         refresh-time="1000">
+                </qr-code>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Extracted XHTML watermark</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Watermark</h4>
+                <div class="well">
+                    {{ extractCtrl.watermark.xhtmlWatermarks.watermark }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4>QrCode</h4>
+                <qr-code qr-code-data="extractCtrl.watermark.xhtmlWatermarks.watermark"
+                         refresh-time="1000">
+                </qr-code>
+            </div>
+        </div>
+    </div>
+
+    <octopus-loading load="extractCtrl.load" ng-show="extractCtrl.load.loading" class="ng-hide"></octopus-loading>
+    <octopus-error error="extractCtrl.error" ng-hide="!extractCtrl.error" class="ng-hide"></octopus-error>
+</div>

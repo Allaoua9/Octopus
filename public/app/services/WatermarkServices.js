@@ -24,6 +24,17 @@ angular
                 }).then(successCallback, errorCallback);
             };
 
+            watermarker.extractWatermark = function (epubID, fileIDs, successCallback, errorCallback) {
+
+                $http({
+                    method: 'POST',
+                    url: '/epub/' + epubID + '/extractwatermark',
+                    data: {
+                        ids: fileIDs
+                    }
+                }).then(successCallback, errorCallback);
+            };
+
             return watermarker;
         }
     ]);

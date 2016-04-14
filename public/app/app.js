@@ -45,6 +45,11 @@ angular
                         controller: 'DownloadController',
                         controllerAs: 'downloadCtrl'
                     })
+                    .when('/extractwatermark/:epubID', {
+                        templateUrl: '../views/extractwatermark.html',
+                        controller: 'WatermarkExtractionController',
+                        controllerAs: 'extractCtrl'
+                    })
                     .otherwise({
                         redirectTo: '/home'
                     })
