@@ -120,7 +120,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
     });
 
-    Lab.test('Testing /watermark route handler with valid input', (done) => {
+    Lab.test('Testing /watermark route handler with valid input', { timeout : 10000 }, (done) => {
 
         const fileStream = Fs.createReadStream('./test/file/book/book.epub');
         /* Creating a FormData object*/
@@ -150,7 +150,11 @@ Lab.experiment('Testing the server and the routes', () => {
                                     id: 'item30',
                                     watermark: '1234'
                                 }
-                            ]
+                            ],
+                            imageWatermarks : {
+                                ids: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9'],
+                                watermark: 'Hello World !'
+                            }
                         }
                     }
                 };
@@ -166,14 +170,15 @@ Lab.experiment('Testing the server and the routes', () => {
 
     });
 
-    Lab.test('Testing /extractwatermark route handler', (done) => {
+    Lab.test('Testing /extractwatermark route handler', { timeout : 10000 }, (done) => {
 
         const options = {
             method: 'POST',
             url: '/epub/' + watermarkedEpubId + '/extractwatermark',
             payload: {
                 ids : {
-                    cssIDs: ['item30']
+                    cssIDs: ['item30'],
+                    imagesIDs: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9']
                 }
             }
         };
@@ -182,6 +187,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
             Code.expect(watermarkResponse.result.cssWatermarks[0].id).to.equal('item30');
             Code.expect(watermarkResponse.result.cssWatermarks[0].watermark).to.equal('0x1234');
+            Code.expect(watermarkResponse.result.imageWatermarks[0]).to.equal('Hello World !');
             done();
         });
     });

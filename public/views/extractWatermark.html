@@ -141,16 +141,16 @@
                 <h3>Extracted Images watermark</h3>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-repeat="watermark in extractCtrl.watermark.imageWatermarks track by $index">
             <div class="col-md-8">
                 <h4>Watermark</h4>
                 <div class="well">
-                    {{ extractCtrl.watermark.imageWatermarks.watermark }}
+                    {{ watermark }}
                 </div>
             </div>
             <div class="col-md-4">
                 <h4>QrCode</h4>
-                <qr-code qr-code-data="extractCtrl.watermark.imageWatermarks.watermark"
+                <qr-code qr-code-data="watermark"
                          refresh-time="1000">
                 </qr-code>
             </div>

@@ -8,13 +8,14 @@ const Code = require('code');
 const EpubWatermarker = require('../lib/epubWatermarker.js');
 const Fs = require('fs');
 
+
 Lab.experiment('Testing the watermark embder: ', () => {
 
     const path = './test/file/book/book.epub';
     const watermarker = new EpubWatermarker();
     let watermarkedEpubData = null;
 
-    Lab.test('It Should create a watermarked epub file given a watermark and a cover epub file', (done) => {
+    Lab.test('It Should create a watermarked epub file given a watermark and a cover epub file', { timeout: 10000 }, (done) => {
 
         const watermarks = {
             cssWatermarks: [
@@ -26,7 +27,11 @@ Lab.experiment('Testing the watermark embder: ', () => {
                     id: 'item31',
                     watermark: '123431'
                 }
-            ]
+            ],
+            imageWatermarks: {
+                ids: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9'],
+                watermark: 'Hello World !'
+            }
         };
 
         Fs.readFile(path, (err, data) => {
@@ -43,10 +48,11 @@ Lab.experiment('Testing the watermark embder: ', () => {
         });
     });
 
-    Lab.test('It should extract the watermark from the epub', (done) => {
+    Lab.test('It should extract the watermark from the epub', { timeout: 10000 }, (done) => {
 
         const fileIDs = {
-            cssIDs: ['item30', 'item31']
+            cssIDs: ['item30', 'item31'],
+            imagesIDs: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9']
         };
 
         watermarker.extractWatermark(watermarkedEpubData, fileIDs, (err, watermarks) => {
@@ -54,6 +60,8 @@ Lab.experiment('Testing the watermark embder: ', () => {
             Code.expect(err).to.not.exist();
             Code.expect(watermarks.cssWatermarks[0].watermark).to.equal('0x123430');
             Code.expect(watermarks.cssWatermarks[1].watermark).to.equal('0x123431');
+            Code.expect(watermarks.imageWatermarks[0]).to.equal('Hello World !');
+            //console.log(watermarks.imageWatermarks);
             done();
         });
     });

@@ -5,7 +5,7 @@
 
 const Lab = require('lab').script();
 const Code = require('code');
-const TempFilesMannager = require('../lib/handlers/tempFilesManager.js').TempFilesMannager;
+const TempFilesMannager = require('../lib/handlers/tempFilesManager.js').TempFilesManager;
 
 Lab.experiment('Testing Temporary files mannagement', () => {
 
