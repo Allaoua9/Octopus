@@ -187,7 +187,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
             Code.expect(watermarkResponse.result.cssWatermarks[0].id).to.equal('item30');
             Code.expect(watermarkResponse.result.cssWatermarks[0].watermark).to.equal('0x1234');
-            Code.expect(watermarkResponse.result.imageWatermarks[0]).to.equal('Hello World !');
+            Code.expect(watermarkResponse.result.imageWatermarks[0].data).to.equal('Hello World !');
             done();
         });
     });

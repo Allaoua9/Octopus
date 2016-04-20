@@ -218,5 +218,15 @@ angular
                     vm.error = response.data;
                 }
             );
+
+            vm.getPanelClass = function (error) {
+
+                if (error) {
+                    return 'panel-danger';
+                }
+                else {
+                    return '';
+                }
+            };
         }
     ]);

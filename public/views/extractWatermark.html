@@ -111,7 +111,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h3> Extracted Css watermarks </h3>
+                <h3> Extracted Css Watermarks ({{ extractCtrl.watermark.cssWatermarks.length || 0 }}) </h3>
             </div>
         </div>
 
@@ -138,23 +138,35 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h3>Extracted Images watermark</h3>
+                <h3>Extracted Images Watermarks ({{ extractCtrl.watermark.imageWatermarks.length }})</h3>
             </div>
         </div>
-        <div class="row" ng-repeat="watermark in extractCtrl.watermark.imageWatermarks track by $index">
-            <div class="col-md-8">
-                <h4>Watermark</h4>
-                <div class="well">
-                    {{ watermark }}
+        <uib-accordion close-others="false">
+            <uib-accordion-group  ng-repeat="watermark in extractCtrl.watermark.imageWatermarks track by $index"
+                                  is-open="accordion.open[$index]"
+                                  class="{{ extractCtrl.getPanelClass(watermark.error) }}">
+                <uib-accordion-heading >
+                    Watermark N°{{ $index + 1 }}
+                    <i class="pull-right glyphicon"
+                       ng-class="{'glyphicon-chevron-down': accordion.open[$index], 'glyphicon-chevron-right': !accordion.open[$index]}"></i>
+                </uib-accordion-heading>
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>Watermark</h4>
+                        <div class="well">
+                            {{ watermark.data }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>QrCode</h4>
+                        <qr-code ng-hide="watermark.error" qr-code-data="watermark"
+                                 refresh-time="500">
+                        </qr-code>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <h4>QrCode</h4>
-                <qr-code qr-code-data="watermark"
-                         refresh-time="1000">
-                </qr-code>
-            </div>
-        </div>
+            </uib-accordion-group>
+        </uib-accordion>
+
 
         <div class="row">
             <div class="col-md-12">
