@@ -7,7 +7,6 @@ const Lab = require('lab').script();
 const Code = require('code');
 const EpubWatermarker = require('../lib/epubWatermarker.js');
 const Fs = require('fs');
-const Async = require('async');
 
 
 Lab.experiment('Testing the watermark embder: ', () => {
@@ -38,7 +37,7 @@ Lab.experiment('Testing the watermark embder: ', () => {
         Fs.readFile(path, (err, data) => {
 
             if (!err) {
-                watermarker.embedWatermark(data, watermarks, (err, watermarkedData) => {
+                watermarker.embedWatermark(data, watermarks, null, (err, watermarkedData) => {
 
                     Code.expect(err).to.not.exist();
                     Code.expect(Buffer.isBuffer(watermarkedData)).to.be.true();
@@ -81,7 +80,7 @@ Lab.experiment('Testing the watermark embder: ', () => {
         Fs.readFile(path, (err, data) => {
 
             if (!err) {
-                watermarker.embedWatermark(data, watermarks, (err, watermarkedData) => {
+                watermarker.embedWatermark(data, watermarks, null, (err, watermarkedData) => {
 
                     Code.expect(err).to.exist();
                     Code.expect(watermarkedData).to.be.null();

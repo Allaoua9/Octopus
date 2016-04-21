@@ -7,14 +7,15 @@
 
 angular
     .module('WatermarkControllers', [
+        'rzModule',
         'EpubServices',
         'WatermarkServices',
         'OctopusSelect',
         'QRCode'
     ])
-    .controller('WatermarkController',  ['$routeParams', '$location', 'Epub', 'Watermarker',
+    .controller('WatermarkController',  ['$scope', '$routeParams', '$location', 'Epub', 'Watermarker',
 
-        function ($routeParams, $location, epub, watermarker) {
+        function ($scope, $routeParams, $location, epub, watermarker) {
 
 
             var vm = this;
@@ -40,6 +41,19 @@ angular
             vm.selectedXhtml = [];
             vm.imageWatermark = null;
             vm.xhtmlWatermark = null;
+
+            vm.options = {
+                alpha: 40,
+                compress: true
+            };
+
+            vm.slider = {
+                options: {
+                    showSelectionBar: true,
+                    floor: 20,
+                    ceil: 100
+                }
+            };
 
             /*Form validation*/
             vm.requireWatermark = function () {
@@ -93,7 +107,7 @@ angular
                 vm.watermarks.setImageWatermarks(imageIDs, vm.imageWatermark);
                 vm.watermarks.setXhtmlWatermarks(xhtmlIDs, vm.xhtmlWatermark);
 
-                watermarker.embedWatermark(vm.epubID, vm.watermarks,
+                watermarker.embedWatermark(vm.epubID, vm.watermarks, vm.options,
 
                     function (response) {
                         $location.path('/epub/' + response.data.id + '/downloadandpreview');
@@ -113,6 +127,9 @@ angular
                     vm.load.loading = false;
                     /* Storing the metadata in case it is needed later*/
                     vm.metadata = response.metadata;
+                    /* Notifying scrollable of content change*/
+                    $scope.$broadcast('content.changed');
+                    $scope.$broadcast('content.reload');
                 },
                 function (response) {
 

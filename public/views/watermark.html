@@ -24,13 +24,24 @@
                          ng-class="{'has-error' : watermarkForm.cssWatermark.$dirty && watermarkForm.cssWatermark.$invalid }">
                         <label for="css-watermark">Watermark</label>
 
-                        <input type='text' name="cssWatermark" id="css-watermark" class="form-control css-watermark"
-                               ng-model="watermarkCtrl.selectedCss.watermark" pattern="^([a-fA-F\d]+)$" maxlength="32"
-                               ng-disabled="watermarkCtrl.selectedCss == null" ng-required="watermarkCtrl.requireWatermark()">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">0x</span>
+                            <input type='text' name="cssWatermark" id="css-watermark" class="form-control css-watermark"
+                                   ng-model="watermarkCtrl.selectedCss.watermark" pattern="^([a-fA-F\d]+)$" maxlength="32"
+                                   ng-disabled="watermarkCtrl.selectedCss == null" ng-required="watermarkCtrl.requireWatermark()"
+                                   placeholder="Hexadecimal Number">
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="compress" id="compress" ng-model="watermarkCtrl.options.compress"> Compress CSS files
+                            </label>
+                        </div>
 
                         <div class="help-block" ng-messages="watermarkForm.cssWatermark.$error">
                             <p ng-message="pattern">The watermark must be a decimal or an hexadecimal number.</p>
                         </div>
+
                     </div>
 
                 </div>
@@ -51,6 +62,16 @@
                                     <p class="octopus-option-label">{{ imageFile.id }}</p>
                                 </octopus-option>
                             </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <octopus-select-all select-all-name="all-images"
+                                                        select-all-id="all-images"
+                                                        select-all-model="watermarkCtrl.selectAllImages">
+                                    </octopus-select-all>
+                                    Select All
+                                </label>
+                            </div>
                         </octopus-select>
                     </div>
 
@@ -61,17 +82,22 @@
 
                             <div class="form-group">
                                 <label for="image-watermark">Watermark</label>
-                            <textarea name="image-watermark" ng-disabled="(watermarkCtrl.selectedImages.length == 0)"
-                                      id="image-watermark" class="image-watermark form-control"
-                                      ng-model="watermarkCtrl.imageWatermark">
-                            </textarea>
+                                <textarea name="image-watermark" ng-disabled="(watermarkCtrl.selectedImages.length == 0)"
+                                          id="image-watermark" class="image-watermark form-control"
+                                          ng-model="watermarkCtrl.imageWatermark">
+                                </textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Strength</label>
+                                <rzslider rz-slider-model="watermarkCtrl.options.alpha"
+                                          rz-slider-options="watermarkCtrl.slider.options"></rzslider>
                             </div>
 
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-
+                            <label> Qr Code</label>
                             <qr-code qr-code-data="watermarkCtrl.imageWatermark"
                                      refresh-time="1000">
 
@@ -95,6 +121,17 @@
                                     </div>
                                     <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
                                 </octopus-option>
+
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <octopus-select-all select-all-name="all-xhtml"
+                                                        select-all-id="all-xhtml"
+                                                        select-all-model="watermarkCtrl.selectAllXhtml">
+                                    </octopus-select-all>
+                                    Select All
+                                </label>
                             </div>
                         </octopus-select>
                     </div>
@@ -116,7 +153,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-
+                            <label> Qr Code</label>
                             <qr-code qr-code-data="watermarkCtrl.xhtmlWatermark"
                                      refresh-time="1000">
 

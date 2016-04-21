@@ -36,7 +36,7 @@ Lab.experiment('Testing Temporary files mannagement', () => {
 
     Lab.test('It Should remove the created file', (done) => {
 
-        tempFiles.cleanFile(id, (err) => {
+        tempFiles.cleanDir(id, (err) => {
 
             Code.expect(err).to.not.exist();
             done();
@@ -45,7 +45,7 @@ Lab.experiment('Testing Temporary files mannagement', () => {
 
     Lab.test('It should not create error when attempting to remove a not existing file', (done) => {
 
-        tempFiles.cleanFile(id, (err) => {
+        tempFiles.cleanDir(id, (err) => {
 
             Code.expect(err).to.not.exist();
             done();
@@ -65,7 +65,7 @@ Lab.experiment('Testing Temporary files mannagement', () => {
                     Code.expect(exist).to.be.false();
                     done();
                 });
-            }, 7);
+            }, 100);
         });
     });
 

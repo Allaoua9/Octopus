@@ -41,6 +41,11 @@ const ids = Joi.object({
     xhtmlIDs: Joi.array().items(Joi.string().trim()).optional()
 });
 
+const options = Joi.object({
+    alpha: Joi.number().optional(),
+    compress: Joi.boolean().optional()
+});
+
 
 exports.clientID = clientID;
 exports.ownership = ownership;
@@ -51,7 +56,8 @@ exports.uploadBook = Joi.object({
 });
 
 exports.watermarkBook = Joi.object({
-    watermarks: watermarks.required()
+    watermarks: watermarks.required(),
+    options: options.optional()
 });
 
 exports.extractWatermark = Joi.object({

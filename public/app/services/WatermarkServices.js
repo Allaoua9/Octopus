@@ -13,13 +13,14 @@ angular
 
             var watermarker = {};
 
-            watermarker.embedWatermark = function (epubID, watermarks, successCallback, errorCallback) {
+            watermarker.embedWatermark = function (epubID, watermarks, options, successCallback, errorCallback) {
 
                 $http({
                     method: 'POST',
                     url: '/epub/' + epubID + '/watermark',
                     data: {
-                        watermarks: watermarks
+                        watermarks: watermarks,
+                        options: options
                     }
                 }).then(successCallback, errorCallback);
             };

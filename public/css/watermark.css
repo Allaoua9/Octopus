@@ -29,3 +29,7 @@ textarea.xhtml-watermark, textarea.image-watermark {
 .extract-validation {
     text-align: center;
 }
+
+qr-code .qr-code {
+    border: 1px solid lightgray;
+}
