@@ -4,7 +4,6 @@
 'use strict';
 const SchemaJOI = require('../validation/schemaJOI.js');
 const WatermarkHandler = require('../lib/handlers/watermarkHandler.js');
-const Lwip = require('lwip');
 const Fs = require('fs');
 
 exports.register = function (server, options, next) {
@@ -22,15 +21,21 @@ exports.register = function (server, options, next) {
                             reply('Error');
                         }
                         else {
-                            Lwip.open(data, 'png', (err, image) => {
+                            try {
+                                const Lwip = require('lwip');
+                                Lwip.open(data, 'png', (err, image) => {
 
-                                if (err) {
-                                    reply('Error');
-                                }
-                                else {
-                                    reply('Image opened :' + image.width() + 'x' + image.height());
-                                }
-                            });
+                                    if (err) {
+                                        reply('Error');
+                                    }
+                                    else {
+                                        reply('Image opened :' + image.width() + 'x' + image.height());
+                                    }
+                                });
+                            }
+                            catch (err) {
+                                reply(err);
+                            }
                         }
                     });
                 }
