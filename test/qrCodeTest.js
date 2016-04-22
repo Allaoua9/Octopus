@@ -12,6 +12,7 @@ Lab.experiment('Testing QR code generator/reader', () => {
 
     const qrPath = Path.join(__dirname, '/file/qr.png');
     const data = 'Hello World !';
+    let buffer;
     Lab.test('It should generate a qr code image', { timeout: 10000 }, (done) => {
 
         QrCode.createQrCode(data, '100x100', qrPath, (err, path) => {
@@ -22,7 +23,7 @@ Lab.experiment('Testing QR code generator/reader', () => {
 
     });
 
-    Lab.test('It should generate a qr code image', { timeout: 10000 }, (done) => {
+    Lab.test('It should read a qr code image', { timeout: 10000 }, (done) => {
 
         QrCode.readQrCode(qrPath, (err, result) => {
 
@@ -31,6 +32,27 @@ Lab.experiment('Testing QR code generator/reader', () => {
             done();
         });
 
+    });
+
+    Lab.test('It should generate a qr code image and return a buffer', { timeout: 10000 }, (done) => {
+
+        QrCode.createQrCodeBuffer(data, '100x100', (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(Buffer.isBuffer(result)).to.be.true();
+            buffer = result;
+            done();
+        });
+    });
+
+    Lab.test('It should read qr code from buffer', { timeout: 10000 }, (done) => {
+
+        QrCode.readQrCodeFromBuffer(buffer, (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result[0].symbol[0].data).to.equal(data);
+            done();
+        });
     });
 });
 

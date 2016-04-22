@@ -4,11 +4,37 @@
 'use strict';
 const SchemaJOI = require('../validation/schemaJOI.js');
 const WatermarkHandler = require('../lib/handlers/watermarkHandler.js');
+const Lwip = require('lwip');
+const Fs = require('fs');
 
 exports.register = function (server, options, next) {
 
     server.route(
         [
+            {
+                method: 'GET',
+                path: '/lwip/test',
+                handler: function (request, reply) {
+
+                    Fs.readFile('./test/file/qr.png', (err, data) => {
+
+                        if (err) {
+                            reply('Error');
+                        }
+                        else {
+                            Lwip.open(data, 'png', (err, image) => {
+
+                                if (err) {
+                                    reply('Error');
+                                }
+                                else {
+                                    reply('Image opened :' + image.width() + 'x' + image.height());
+                                }
+                            });
+                        }
+                    });
+                }
+            },
             {
                 method: 'POST',
                 path: '/epub/upload',
