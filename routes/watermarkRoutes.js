@@ -23,18 +23,24 @@ exports.register = function (server, options, next) {
                         else {
                             try {
                                 const Lwip = require('lwip');
-                                Lwip.open(data, 'png', (err, image) => {
 
-                                    if (err) {
-                                        reply('Error');
-                                    }
-                                    else {
-                                        reply('Image opened :' + image.width() + 'x' + image.height());
-                                    }
-                                });
+                                try {
+                                    Lwip.open(data, 'png', (err, image) => {
+
+                                        if (err) {
+                                            reply('Error');
+                                        }
+                                        else {
+                                            reply('Image opened :' + image.width() + 'x' + image.height());
+                                        }
+                                    });
+                                }
+                                catch (err) {
+                                    reply('Could not open');
+                                }
                             }
                             catch (err) {
-                                reply(err);
+                                reply('Could not load lwip');
                             }
                         }
                     });
