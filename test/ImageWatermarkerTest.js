@@ -11,7 +11,7 @@ const ImageWatermarker = require('../lib/imageWatermarker/imageWatermarker.js');
 
 Lab.experiment('Testing the Image watermarker', () => {
 
-    const watermarker = new ImageWatermarker(Path.join(__dirname, '/images'));
+    const watermarker = new ImageWatermarker(Path.join(__dirname, 'file/images'));
 
     const images = [
         '1.jpg',
@@ -21,7 +21,7 @@ Lab.experiment('Testing the Image watermarker', () => {
 
     Lab.test('It should embed a watermark into images', (done) => {
 
-        Code.expect(watermarker.workingDir).to.equal(Path.join(__dirname, '/images'));
+        Code.expect(watermarker.workingDir).to.equal(Path.join(__dirname, 'file/images'));
 
         const watermark = 'qr.png';
 

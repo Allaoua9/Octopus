@@ -31,6 +31,10 @@ Lab.experiment('Testing the watermark embder: ', () => {
             imageWatermarks: {
                 ids: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9'],
                 watermark: 'Hello World !'
+            },
+            xhtmlWatermarks: {
+                ids: ['item32'],
+                watermark: 'Hello World Xhtml !'
             }
         };
 
@@ -52,7 +56,8 @@ Lab.experiment('Testing the watermark embder: ', () => {
 
         const fileIDs = {
             cssIDs: ['item30', 'item31'],
-            imagesIDs: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9']
+            imagesIDs: ['item1', 'item3', 'item4', 'item5', 'item6', 'item7', 'item8', 'item9'],
+            xhtmlIDs: ['item32']
         };
 
         watermarker.extractWatermark(watermarkedEpubData, fileIDs, (err, watermarks) => {
@@ -61,7 +66,7 @@ Lab.experiment('Testing the watermark embder: ', () => {
             Code.expect(watermarks.cssWatermarks[0].watermark).to.equal('0x123430');
             Code.expect(watermarks.cssWatermarks[1].watermark).to.equal('0x123431');
             Code.expect(watermarks.imageWatermarks[0].data).to.equal('Hello World !');
-            //console.log(watermarks.imageWatermarks);
+            Code.expect(watermarks.xhtmlWatermarks[0].data).to.equal('Hello World Xhtml !');
             done();
         });
     });

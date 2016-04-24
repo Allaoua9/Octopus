@@ -33,9 +33,9 @@
     "inert": "^3.2.0",
     "joi": "^8.0.4",
     "jszip": "^2.5.0",
-    "lwip": "0.0.8",
     "mathjs": "^3.0.0",
     "mkdirp": "^0.5.1",
+    "pngjs2": "^2.0.0",
     "rimraf": "^2.5.2"
   },
   "devDependencies": {
