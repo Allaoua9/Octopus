@@ -35,7 +35,7 @@
     "jszip": "^2.5.0",
     "mathjs": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "pngjs2": "^2.0.0",
+    "pngjs": "^2.3.0",
     "rimraf": "^2.5.2"
   },
   "devDependencies": {
