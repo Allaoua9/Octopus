@@ -14,6 +14,7 @@
   "moduleType": [],
   "private": true,
   "dependencies": {
-    "ngScrollable": "ng-scrollable#^0.2.5"
+    "ngScrollable": "ng-scrollable#^0.2.5",
+    "awesome-bootstrap-checkbox": "^0.3.7"
   }
 }

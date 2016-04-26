@@ -19,16 +19,97 @@ body {
     height: 100vh;
 }
 
+.jumbotron.octopus-home {
+    margin: 0;
+    background: url("../images/background3.png") center no-repeat;
+    background-size: cover;
+}
+
+.jumbotron.octopus-home .jumbotron-title {
+    color: black;
+}
+
+.jumbotron.octopus-home p.jumbotron-text {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: dimgray;
+}
+
+.jumbotron.octopus-home .jumbotron-image {
+    position: relative;
+    width: 430px;
+    height: 430px;
+    background: url("../images/octopus.png") center no-repeat;
+    background-size: contain;
+    animation: move 3s infinite;
+}
+
+@keyframes move {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: 5px;
+    }
+    100% {
+        top: 0;
+    }
+}
+
 .view-container {
     position: relative;
 }
 
-.epub-upload {
+.upload-box {
     display: flex;
+    align-items: center;
+    text-align: center;
+    width: 70%;
+    height: 70%;
+    margin-left: 15%;
+    margin-top: 5%;
+
+    border: 5px dashed lightgray;
+}
+
+.epub-upload .upload-icon {
+    color: darkgray;
+    margin-bottom: 50px;
+}
+
+.btn-upload {
+    cursor: pointer;
+}
+
+a.book-image {
+    display: block;
+    background: center, no-repeat;
+    background-size: cover;
+
+    border: 1px solid lightgray;
+    margin: auto;
+    color: white;
+    text-decoration: none;
+}
+
+a.book-image .preview-image {
+    display: none;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 1s ease;
+}
+
+a.book-image .preview-image:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+a.book-image:hover .preview-image {
+    display: flex;
+    width: 100%;
+    height: 100%;
     align-items: center;
     text-align: center;
 }
 
-.epub-upload > .btn-upload {
-    vertical-align: middle;
+a.book-image .preview-image .icon {
+    margin: auto;
 }

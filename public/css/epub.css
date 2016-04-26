@@ -7,8 +7,16 @@
 .epub-details .book-image {
     width: 300px;
     height: 400px;
-    background: center, no-repeat;
-    background-size: cover;
+}
 
-    border: 1px solid lightgray;
+.book-metadata {
+    font-weight: 700;
+}
+
+.metadata-value {
+    font-weight: normal;
+}
+
+.metadata-value-author {
+    color: #f16529;
 }

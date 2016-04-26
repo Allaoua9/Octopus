@@ -5,7 +5,7 @@ octopus-error {
 
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 100vh;
 
     align-items: center;
 
@@ -22,4 +22,11 @@ octopus-error.ng-hide-add {
 
 octopus-error.ng-hide-remove {
     animation: 2s fadeIn;
+}
+
+octopus-error .error-image {
+    width: 430px;
+    height: 430px;
+    background: url("../../../../images/octopus-sad.png") center no-repeat;
+    background-size: contain;
 }

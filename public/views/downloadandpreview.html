@@ -2,16 +2,20 @@
     <div class="container" ng-hide="watermarkCtrl.error || watermarkCtrl.load.loading">
         <div class="row">
             <div class="col-md-offset-2 col-md-8">
-                <h1 class="book-title">Title : {{ downloadCtrl.epub.title }}</h1>
-                <div class="book-image"
-                     ng-style="{'background-image': 'url(' + (downloadCtrl.epub.image || '../images/no-image.png') +')'}">
-
-                </div>
+                <h1 class="book-title">{{ downloadCtrl.epub.title }}</h1>
+                    <a class="book-image" href="/epubreader/{{ downloadCtrl.epubID }}" target="_blank"
+                         ng-style="{'background-image': 'url(' + (downloadCtrl.epub.image || '../images/no-image.png') +')'}">
+                        <div class="preview-image">
+                            <span class="icon fa fa-eye fa-3x"></span>
+                        </div>
+                    </a>
                 <div class="download-buttons">
                     <a class="btn btn-primary download-btn"
-                       href="/epub/{{ downloadCtrl.epubID }}/download/{{ downloadCtrl.epub.title + '.epub' }}"> Download </a>
-                    <a class="btn btn-primary preview-btn"
-                       href="/epubreader/{{ downloadCtrl.epubID }}" target="_blank"> Preview</a>
+                       href="/epub/{{ downloadCtrl.epubID }}/download/{{ downloadCtrl.epub.title + '.epub' }}">
+                        <span class="fa fa-download"></span> Download
+                    </a>
+                    <a class="btn btn-primary"
+                       href="#/extractwatermark/{{ downloadCtrl.epubID }}"> Extract watermark</a>
                 </div>
             </div>
         </div>

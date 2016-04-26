@@ -2,35 +2,46 @@
     <div class="container" ng-hide="epubCtrl.error || epubCtrl.load.loading">
         <div class="row">
             <div class="col-md-4">
-                <div class="book-image" ng-style="{'background-image': 'url(' + (epubCtrl.epub.image || '../images/no-image.png') +')'}">
-
-                </div>
+                <a class="book-image" href="/epubreader/{{ epubCtrl.epub.id }}" target="_blank"
+                   ng-style="{'background-image': 'url(' + (epubCtrl.epub.image || '../images/no-image.png') +')'}">
+                    <div class="preview-image">
+                        <span class="icon fa fa-eye fa-3x"></span>
+                    </div>
+                </a>
             </div>
             <div class="col-md-8">
-                <h1>Title : {{epubCtrl.epub.title || 'N/A'}}</h1>
+                <h1>{{epubCtrl.epub.title || 'N/A'}}</h1>
                 <div class="row">
                     <div class="col-md-6">
-                        <p>Author : {{epubCtrl.epub.author || 'N/A'}}</p>
-                        <p>Subject : {{epubCtrl.epub.subject || 'N/A'}} </p>
-                        <p>Date : {{(epubCtrl.epub.date | date:'dd/MM/yyyy') || 'N/A'}}</p>
+                        <p class="book-metadata">
+                            Author : <span class="metadata-value-author">{{epubCtrl.epub.author || 'N/A'}}</span>
+                        </p>
+                        <p class="book-metadata">
+                            Subject : <span class="metadata-value">{{epubCtrl.epub.subject || 'N/A'}}</span>
+                        </p>
+                        <p class="book-metadata">
+                            Date : <span class="metadata-value">{{(epubCtrl.epub.date | date:'dd/MM/yyyy') || 'N/A'}}</span>
+                        </p>
                     </div>
                     <div class="col-md-6">
-                        <p>Language : {{epubCtrl.epub.language || 'N/A'}}</p>
+                        <p class="book-metadata">
+                            Language : <span class="metadata-value">{{epubCtrl.epub.language || 'N/A'}}</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <p>
-                            Description : <span ng-bind-html="epubCtrl.epub.description || 'N/A'"></span>
+                        <p class="book-metadata">
+                            Description : <span class="metadata-value" ng-bind-html="epubCtrl.epub.description || 'N/A'"></span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4 col-md-offset-8">
-                <a class="btn btn-primary" href="#/extractwatermark/{{ epubCtrl.epub.id }}">Extract Watermark</a>
-                <a class="btn btn-primary" href="#/watermark/{{ epubCtrl.epub.id }}">Embed Watermark</a>
+            <div class="col-md-6 col-md-offset-6">
+                <a class="btn btn-primary pull-right" href="#/extractwatermark/{{ epubCtrl.epub.id }}">Extract Watermark</a>
+                <a class="btn btn-primary pull-right" href="#/watermark/{{ epubCtrl.epub.id }}">Embed Watermark</a>
             </div>
         </div>
     </div>

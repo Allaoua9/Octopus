@@ -12,7 +12,9 @@
                                     <div class="octopus-option-icon" style="background-image: url(../images/cssfile.png);">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ cssFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ cssFile.id }}</p>
+                                    </div>
                                 </octopus-option>
                             </div>
                         </octopus-select>
@@ -32,9 +34,12 @@
                                    placeholder="Hexadecimal Number">
                         </div>
 
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="compress" id="compress" ng-model="watermarkCtrl.options.compress"> Compress CSS files
+                        <div class="checkbox checkbox-warning">
+                            <input type="checkbox" name="compress"
+                                   id="compress"
+                                   ng-model="watermarkCtrl.options.compress">
+                            <label for="compress">
+                                 Compress CSS files
                             </label>
                         </div>
 
@@ -52,23 +57,22 @@
 
                     <div class="form-group">
                         <label>Image Files</label>
-                        <octopus-select selected="watermarkCtrl.selectedImages" multiple>
+                        <octopus-select selected="watermarkCtrl.selectedImages" select-all="watermarkCtrl.selectAllImages" multiple>
                             <div ng-scrollable class="select-scroll">
                                 <octopus-option ng-repeat="imageFile in watermarkCtrl.metadata.imageFiles" value="imageFile">
                                     <div class="octopus-option-icon"
                                          ng-style="{'background-image': 'url(/epub/' + watermarkCtrl.epubID + '/item/' + imageFile.id +')'}">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ imageFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ imageFile.id }}</p>
+                                    </div>
                                 </octopus-option>
                             </div>
 
-                            <div class="checkbox">
-                                <label>
-                                    <octopus-select-all select-all-name="all-images"
-                                                        select-all-id="all-images"
-                                                        select-all-model="watermarkCtrl.selectAllImages">
-                                    </octopus-select-all>
+                            <div class="checkbox checkbox-warning">
+                                <input type="checkbox" name="selectAllImages" id="selectAllImages" ng-model="watermarkCtrl.selectAllImages">
+                                <label for="selectAllImages">
                                     Select All
                                 </label>
                             </div>
@@ -113,23 +117,22 @@
 
                     <div class="form-group">
                         <label>XHTML Files</label>
-                        <octopus-select selected="watermarkCtrl.selectedXhtml" multiple>
+                        <octopus-select selected="watermarkCtrl.selectedXhtml" select-all="watermarkCtrl.selectAllXhtml" multiple>
                             <div ng-scrollable class="select-scroll">
                                 <octopus-option ng-repeat="xhtmlFile in watermarkCtrl.metadata.xhtmlFiles" value="xhtmlFile">
                                     <div class="octopus-option-icon" style="background-image: url(../images/htmlfile.png);">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
+                                    </div>
                                 </octopus-option>
 
                             </div>
 
-                            <div class="checkbox">
-                                <label>
-                                    <octopus-select-all select-all-name="all-xhtml"
-                                                        select-all-id="all-xhtml"
-                                                        select-all-model="watermarkCtrl.selectAllXhtml">
-                                    </octopus-select-all>
+                            <div class="checkbox checkbox-warning">
+                                <input type="checkbox" name="selectAllXhtml" id="selectAllXhtml" ng-model="watermarkCtrl.selectAllXhtml">
+                                <label for="selectAllXhtml">
                                     Select All
                                 </label>
                             </div>

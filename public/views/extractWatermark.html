@@ -6,21 +6,22 @@
                 <div class="col-md-offset-2 col-md-8">
                     <div class="form-group">
                         <label> Css Files </label>
-                        <octopus-select name="selectCss" selected="extractCtrl.selectedCss" multiple>
+                        <octopus-select name="selectCss" selected="extractCtrl.selectedCss"
+                                        select-all="extractCtrl.selectAllCss" multiple>
                             <div ng-scrollable class="select-scroll">
                                 <octopus-option ng-repeat="cssFile in extractCtrl.metadata.cssFiles" value="cssFile">
                                     <div class="octopus-option-icon" style="background-image: url(../images/cssfile.png);">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ cssFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ cssFile.id }}</p>
+                                    </div>
                                 </octopus-option>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <octopus-select-all select-all-name="all-css"
-                                                        select-all-id="all-css"
-                                                        select-all-model="extractCtrl.selectAllCss">
-                                    </octopus-select-all>
+                            <div class="checkbox checkbox-warning">
+                                <input type="checkbox" name="selectAllCss" id="selectAllCss"
+                                       ng-model="extractCtrl.selectAllCss">
+                                <label for="selectAllCss">
                                     Select All
                                 </label>
                             </div>
@@ -34,22 +35,23 @@
 
                     <div class="form-group">
                         <label>Image Files</label>
-                        <octopus-select selected="extractCtrl.selectedImages"  multiple>
+                        <octopus-select selected="extractCtrl.selectedImages"
+                                        select-all="extractCtrl.selectAllImages"  multiple>
                             <div ng-scrollable class="select-scroll">
                                 <octopus-option ng-repeat="imageFile in extractCtrl.metadata.imageFiles" value="imageFile">
                                     <div class="octopus-option-icon"
                                          ng-style="{'background-image': 'url(/epub/' + extractCtrl.epubID + '/item/' + imageFile.id +')'}">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ imageFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ imageFile.id }}</p>
+                                    </div>
                                 </octopus-option>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <octopus-select-all select-all-name="all-images"
-                                                        select-all-id="all-images"
-                                                        select-all-model="extractCtrl.selectAllImages">
-                                    </octopus-select-all>
+                            <div class="checkbox checkbox-warning">
+                                <input type="checkbox" name="selectAllImages" id="selectAllImages"
+                                       ng-model="extractCtrl.selectAllImages">
+                                <label for="selectAllImages">
                                     Select All
                                 </label>
                             </div>
@@ -63,23 +65,26 @@
 
                     <div class="form-group">
                         <label>XHTML Files</label>
-                        <octopus-select selected="extractCtrl.selectedXhtml" multiple>
+                        <octopus-select selected="extractCtrl.selectedXhtml"
+                                        select-all="extractCtrl.selectAllXhtml" multiple>
                             <div ng-scrollable class="select-scroll">
                                 <octopus-option ng-repeat="xhtmlFile in extractCtrl.metadata.xhtmlFiles" value="xhtmlFile">
                                     <div class="octopus-option-icon" style="background-image: url(../images/htmlfile.png);">
 
                                     </div>
-                                    <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
+                                    <div class="octopus-option-label-wrapper">
+                                        <p class="octopus-option-label">{{ xhtmlFile.id }}</p>
+                                    </div>
                                 </octopus-option>
                             </div>
                             <div class="checkbox">
-                                <label>
-                                    <octopus-select-all select-all-name="all-xhtml"
-                                                        select-all-id="all-xhtml"
-                                                        select-all-model="extractCtrl.selectAllXhtml">
-                                    </octopus-select-all>
-                                    Select All
-                                </label>
+                                <div class="checkbox checkbox-warning">
+                                    <input type="checkbox" name="selectAllXhtml" id="selectAllXhtml"
+                                           ng-model="extractCtrl.selectAllXhtml">
+                                    <label for="selectAllXhtml">
+                                        Select All
+                                    </label>
+                                </div>
                             </div>
                         </octopus-select>
                     </div>

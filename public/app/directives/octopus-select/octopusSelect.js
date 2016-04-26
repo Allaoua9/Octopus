@@ -12,7 +12,8 @@ angular
             restrict: 'E',
             transclude: true,
             scope: {
-                selected: '='
+                selected: '=',
+                selectAll: '='
             },
             template: '<div ng-transclude></div>',
             controller: function ($scope, $element, $attrs) {
@@ -88,6 +89,13 @@ angular
                     }
                 };
 
+                $scope.$watch('selectAll', angular.bind(this, function (newValue, oldValue) {
+
+                    if (newValue !== oldValue) {
+                        this.selectAll($scope.selectAll);
+                    }
+                }));
+
                 return this;
             },
             controllerAs: 'octopusSelectCtrl'
@@ -115,27 +123,4 @@ angular
                 });
             }
         };
-    })
-    .directive('octopusSelectAll', function () {
-
-        return {
-            restrict: 'E',
-            require: '^^octopusSelect',
-            scope: {
-                selectAllModel: '=',
-                selectAllName: '@',
-                selectAllId: '@'
-            },
-            template: '<input type="checkbox" ng-model="selectAllModel" name="selectAllName" id="selectAllId">',
-            link: function (scope, element, attr, octopusSelectCtrl) {
-
-                octopusSelectCtrl.selectAll(scope.selectAllModel);
-                scope.$watch('selectAllModel', function (newValue, oldValue) {
-
-                    if (newValue !== oldValue) {
-                        octopusSelectCtrl.selectAll(scope.selectAllModel);
-                    }
-                });
-            }
-        }
     });

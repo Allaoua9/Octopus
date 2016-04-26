@@ -1,13 +1,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-5 col-md-offset-1">
-            <h1 class="error-status">Error : {{ error.statusCode }} {{error.error}}</h1>
-            <p class="error-message">
+            <h1 class="error-status">{{ error.statusCode }} {{error.error}}</h1>
+            <p class="error-message lead">
                 {{ error.message }}
             </p>
         </div>
         <div class="col-md-4">
-            Error image
+            <div class="error-image">
+            </div>
         </div>
     </div>
 </div>

@@ -10,15 +10,12 @@
     margin-bottom: 20px;
 }
 
-.download-preview .book-image {
+.download-preview a.book-image {
+    display: block;
     width: 270px;
     height: 360px;
-    background: center, no-repeat;
-    background-size: cover;
-
-    border: 1px solid lightgray;
-    margin: auto;
 }
+
 
 .download-buttons {
     margin-top: 20px;

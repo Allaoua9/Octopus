@@ -1,31 +1,52 @@
-octopus-select {
+octopus-select .scrollable-content {
     display: block;
+    padding: 10px;
 }
 
 octopus-option {
     display: inline-block;
-    margin: 5px;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 0;
+    cursor: pointer;
 }
 
 octopus-option .octopus-option-wrapper {
 
-    display: inline-flex;
-    margin: 5px;
-    padding: 5px;
-
-    flex-direction: column;
+    display: block;
     align-items: center;
-
+    padding: 0;
+    width: 100px;
     box-sizing: border-box;
 }
 
-octopus-option.selected {
-    border: 1px #D8D8D8 solid;
-    background-color: rgba(145, 145, 145, 0.10);
+octopus-option.selected  {
+    box-shadow: 1px 2px 3px lightgray;
+    /*background-color: rgba(145, 145, 145, 0.10);*/
 }
 
-octopus-option.selected .octopus-option-wrapper  .octopus-option-label {
-    color: #2b81af;
+octopus-option .octopus-option-wrapper .octopus-option-label-wrapper {
+    height: 30px;
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    background-color: white;
+    transition: background-color 0.25s;
+}
+
+octopus-option.selected .octopus-option-wrapper .octopus-option-label-wrapper {
+    background-color: rgba(9, 125, 241, 0.85);
+}
+
+octopus-option .octopus-option-wrapper .octopus-option-label-wrapper  .octopus-option-label {
+    color: black;
+    transition: color 0.25s;
+}
+
+octopus-option.selected .octopus-option-wrapper .octopus-option-label-wrapper  .octopus-option-label {
+    color: white;
 }
 
 octopus-option .octopus-option-wrapper .octopus-option-icon {
@@ -33,12 +54,16 @@ octopus-option .octopus-option-wrapper .octopus-option-icon {
     height: 90px;
     background: no-repeat center;
     background-size: contain;
+    display: block;
+    margin: auto;
 }
 
-octopus-option .octopus-option-wrapper .octopus-option-label {
+octopus-option .octopus-option-wrapper .octopus-option-label-wrapper .octopus-option-label {
     margin-top: 3px;
     margin-bottom: 0;
-    width: 65px;
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
