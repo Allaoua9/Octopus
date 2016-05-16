@@ -65,8 +65,8 @@ Lab.experiment('Testing the watermark embder: ', () => {
             Code.expect(err).to.not.exist();
             Code.expect(watermarks.cssWatermarks[0].watermark).to.equal('0x123430');
             Code.expect(watermarks.cssWatermarks[1].watermark).to.equal('0x123431');
-            Code.expect(watermarks.imageWatermarks[0].data).to.equal('Hello World !');
-            Code.expect(watermarks.xhtmlWatermarks[0].data).to.equal('Hello World Xhtml !');
+            Code.expect(watermarks.imageWatermarks[0].watermark).to.equal('Hello World !');
+            Code.expect(watermarks.xhtmlWatermarks[0].watermark).to.equal('Hello World Xhtml !');
             done();
         });
     });
