@@ -1,10 +1,18 @@
-qr-code, qr-code .qr-code {
+qr-code, qr-code .qr-code, qr-code .qr-code img {
     width: 100px;
     height: 100px;
     margin: auto;
 }
 
-qr-code .qr-code {
+qr-code .qr-code img {
+    display: block;
+}
+
+qr-code .qr-code[data-src='NoData'] img{
+    visibility: hidden;
+}
+
+/*qr-code .qr-code {
     background: no-repeat center;
     background-size: contain;
-}
+}*/

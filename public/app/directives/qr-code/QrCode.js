@@ -51,7 +51,6 @@ angular
                             $timeout.cancel(vm.qrCodePromise);
                         }
                         vm.qrCodePromise = $timeout(function() {
-
                             vm.qrCodeUrl = qrcode.getQrCode($scope.qrCodeData, 100, 100);
                         }, $scope.refreshTime || 1000);
 

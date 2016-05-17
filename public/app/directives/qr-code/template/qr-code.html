@@ -1,3 +1,6 @@
-<div class="qr-code" ng-style="{'background-image': 'url(' + qrCodeCtrl.qrCodeUrl + ')'}">
+<!--<div class="qr-code" ng-style="{'background-image': 'url(' + qrCodeCtrl.qrCodeUrl + ')'}">
 
+</div>-->
+<div class="qr-code" data-src="{{ qrCodeCtrl.qrCodeUrl }}">
+    <img  src="{{ qrCodeCtrl.qrCodeUrl }}" alt="qrcode">
 </div>
