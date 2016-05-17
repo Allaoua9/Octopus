@@ -160,7 +160,7 @@ Lab.experiment('Testing the server and the routes', () => {
                 };
                 server.inject(options, (watermarkResponse) => {
 
-                    Code.expect(watermarkResponse.result.success).to.equal(true);
+                    Code.expect(watermarkResponse.statusCode).to.equal(200);
                     Code.expect(watermarkResponse.result.id).to.exist();
                     watermarkedEpubId = watermarkResponse.result.id;
                     done();
