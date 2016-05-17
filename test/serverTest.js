@@ -41,7 +41,7 @@ Lab.experiment('Testing the server and the routes', () => {
 
             server.inject(options, (response) => {
 
-                Code.expect(response.result.success).to.equal(true);
+                Code.expect(response.statusCode).to.equal(200);
                 Code.expect(response.result.id).to.exist();
                 epubId = response.result.id;
                 /*Code.expect(response.result.filename).to.equal('book.epub');
