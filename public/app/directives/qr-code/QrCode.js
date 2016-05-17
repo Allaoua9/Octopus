@@ -18,7 +18,7 @@ angular
                 height = height ||100;
                 if (data !== '') {
                     return encodeURI('https://api.qrserver.com/v1/create-qr-code/?data=' + data.toString()
-                        + '&size=' + width.toString() + 'x' + height.toString()) ;
+                        + '&size=' + width.toString() + 'x' + height.toString() + '&ecc=L') ;
                 }
                 else {
                     return 'NoData';
