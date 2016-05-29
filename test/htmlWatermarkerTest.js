@@ -16,24 +16,32 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
 
     const htmlFiles = [
         Path.join( __dirname, 'file/html/originals/1.htm'),
-        Path.join( __dirname, 'file/html/originals/2.htm')
+        Path.join( __dirname, 'file/html/originals/2.htm'),
+        Path.join( __dirname, 'file/html/originals/ch02.html')
     ];
 
     const watermarkedHtmlFiles = [
         Path.join( __dirname, 'file/html/1.htm'),
-        Path.join( __dirname, 'file/html/2.htm')
+        Path.join( __dirname, 'file/html/2.htm'),
+        Path.join( __dirname, 'file/html/ch02.html')
     ];
 
+    // the watermark text
     const watermark = 'Hello world !';
-    let watermarkData = null;
+    // the watermark Qr Code Image
+    let watermarkImageData = null;
+    // Array of Html files that are going to be watermarked
     const htmlFilesData = [];
+    // Array of watermarked Html Files
     let watermarkedHtmlData;
-    let watermarksData = null;
+    // extracted watermarks
+    let extractedWatermarksData = null;
 
     const watermarker = new HtmlWatermarker();
 
     Lab.before({ timeout : 10000 },(done) => {
 
+        // opening Html files.
         const openHtmlFiles = function (done) {
 
             Async.forEachOf(htmlFiles, (file, key, fileRead) => {
@@ -44,19 +52,20 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
                         fileRead(err);
                     }
                     else {
-                        htmlFilesData[key] = data;
+                        htmlFilesData[key] = data.toString();
                         fileRead(null);
                     }
                 });
             }, done);
         };
 
+        // Creating Qr Code image
         const openImage = function (done) {
 
             QrCode.createQrCodeBuffer(watermark, '100x100', (err, data) => {
 
                 Code.expect(err).to.not.exist();
-                watermarkData = data;
+                watermarkImageData = data;
                 done();
             });
         };
@@ -72,18 +81,28 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
 
     });
 
-    Lab.test('It should embed a watermark image in an html file', (done) => {
+    Lab.test('It should encode an image into utf-8 buffers', (done) => {
 
-        watermarker.embedWatermark(htmlFilesData, watermarkData, (err, watermarkedHtml) => {
+        watermarker._encodeImage(watermarkImageData, (err, buffers) => {
 
             Code.expect(err).to.not.exist();
-            Code.expect(watermarkedHtml.length).to.equal(2);
-            watermarkedHtmlData = watermarkedHtml;
+            Code.expect(buffers.length).to.equal(10000);
             done();
         });
     });
 
-    Lab.test('It should extract a watermark image from html files', (done) => {
+    Lab.test('It should embed a watermark image in an html file', (done) => {
+
+        watermarker.embedWatermark(htmlFilesData, watermarkImageData, (err, watermarkedData) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(watermarkedData.length).to.equal(3);
+            watermarkedHtmlData = watermarkedData;
+            done();
+        });
+    });
+
+    Lab.test('It should extract a watermark image from html files', { timeout : 10000 }, (done) => {
 
         watermarker.extractWatermark(watermarkedHtmlData, 100, 100, (err, watermarks) => {
 
@@ -92,7 +111,7 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
 
                 Code.expect(err).to.not.exist();
                 Code.expect(result[0].symbol[0].data).to.equal(watermark);
-                watermarksData = watermarks;
+                extractedWatermarksData = watermarks;
                 done();
             });
         });
@@ -102,7 +121,7 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
 
         const saveWatermarkedHtml = (done) => {
 
-            Async.forEachOf(watermarkedHtmlData, (htmlFileData, key, done) => {
+            Async.forEachOfSeries(watermarkedHtmlData, (htmlFileData, key, done) => {
 
                 Fs.writeFile(watermarkedHtmlFiles[key], htmlFileData, (err) => {
 
@@ -114,7 +133,7 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
 
         const saveWatermarks = (done) => {
 
-            Async.forEachOf(watermarksData, (data, key, done) => {
+            Async.forEachOfSeries(extractedWatermarksData, (data, key, done) => {
 
                 Fs.writeFile(Path.join(__dirname, '/file/html/watermark' + key + '.png'), data, (err) => {
 
@@ -124,7 +143,7 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
             }, done);
         };
 
-        Async.parallel([
+        Async.series([
             saveWatermarkedHtml,
             saveWatermarks
         ], (err) => {
@@ -133,6 +152,8 @@ Lab.experiment('Testing watermark insertion and extraction in html files', () =>
             done();
         });
     });
+
+
 });
 
 

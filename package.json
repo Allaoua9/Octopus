@@ -33,10 +33,12 @@
     "inert": "^3.2.0",
     "joi": "^8.0.4",
     "jszip": "^2.5.0",
+    "lodash": "^4.13.1",
     "mathjs": "^3.0.0",
     "mkdirp": "^0.5.1",
     "pngjs": "^2.3.0",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "xmldom": "^0.1.22"
   },
   "devDependencies": {
     "code": "^2.1.0",

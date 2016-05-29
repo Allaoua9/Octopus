@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pls="http://www.w3.org/2005/01/pronunciation-lexicon" xmlns:ssml="http://www.w3.org/2001/10/synthesis" xmlns:svg="http://www.w3.org/2000/svg"><head><title>Chapter 2. Writing Web Service Clients</title><link rel="stylesheet" type="text/css" href="core.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"/><link rel="up" href="index.html" title="RESTful Web Services"/><link rel="prev" href="ch01.html" title="Chapter 1. The Programmable Web and Its Inhabitants"/><link rel="next" href="ch03.html" title="Chapter 3. What Makes RESTful Services Different?"/></head>
+<body>
+<section class="chapter" title="Chapter 2. Writing Web Service Clients" epub:type="chapter" id="httpclients">
+    <div class="titlepage"><div><div><h2 class="title">Chapter 2. Writing Web Service Clients</h2></div></div></div><div class="sect1" title="Web Services Are Web Sites"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="I_sect12_tt98">Web Services Are Web Sites</h2></div></div></div>
+    <p>In <a class="xref" href="ch01.html" title="Chapter 1. The Programmable Web and Its Inhabitants">Chapter 1</a> I showed<a id="ch01_clients" class="indexterm"/><a id="ch01_webservices" class="indexterm"/> some quick examples of clients for existing, public web
+      services. Some of the services had resource-oriented RESTful
+      architectures, some had RPC-style architectures, and some were hybrids.
+      Most of the time, I accessed these services through wrapper libraries
+      instead of making the HTTP requests myself.</p><p>You can’t always rely on the existence of a convenient wrapper
+      library<a id="I_indexterm2_tt99" class="indexterm"/> for your favorite web service, especially if you wrote
+      the web service yourself. Fortunately, it’s easy to write programs that
+      work directly with HTTP requests and responses. In this chapter I show
+      how to write clients for RESTful and hybrid architecture services, in a
+      variety of programming languages.</p><p><a class="xref" href="ch02.html#yahoowebsearch" title="Example 2-1. Searching the Web with Yahoo!’s web service">Example 2-1</a> is a bare HTTP client for a
+      RESTful web service: <a id="I_indexterm2_tt100" class="indexterm"/>Yahoo!’s web search. You might compare it to <a class="xref" href="ch01.html#googlewebsearchexample" title="Example 1-8. Searching the Web with Google’s search service">Example 1-8</a>, the client from the previous
+      chapter that runs against the RPC-style SOAP interface to Google’s web
+      search.</p><div class="example"><a id="yahoowebsearch"/><div class="example-title">Example 2-1. Searching the Web with Yahoo!’s web service</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby
+# yahoo-web-search.rb
+require 'open-uri'
+require 'rexml/document'
+require 'cgi'
+
+BASE_URI = 'http://api.search.yahoo.com/WebSearchService/V1/webSearch'
+
+def print_page_titles(term)
+  # Fetch a resource: an XML document full of search results.
+  term = CGI::escape(term)
+  xml = open(BASE_URI + "?appid=restbook&amp;query=#{term}").read
+
+  # Parse the XML document into a data structure.
+  document = REXML::Document.new(xml)
+
+  # Use XPath to find the interesting parts of the data structure.
+  REXML::XPath.each(document, '/ResultSet/Result/Title/[]') do |title|
+    puts title
+  end
+end
+
+(puts "Usage: #{$0} [search term]"; exit) if ARGV.empty?
+print_page_titles(ARGV.join(' '))</pre></div></div><p>This “web service” code looks just like generic HTTP client code.
+      It uses Ruby’s standard open-uri library to make an HTTP request and
+      Ruby’s standard REXML library to parse the output. I’d use the same
+      tools to fetch and process a web page. These two<a id="I_indexterm2_tt101" class="indexterm"/> URIs:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p><em class="filename">http://api.search.yahoo.com/WebSearchService/V1/webSearch?appid=restbook&amp;query=jellyfish</em></p></li><li class="listitem"><p><em class="filename">http://search.yahoo.com/search?p=jellyfish</em></p></li></ul></div><p>point to different forms of the same thing: “a list of search
+      results for the query ‘jellyfish.’” One URI serves HTML and is
+      intended<a id="I_indexterm2_tt102" class="indexterm"/> for use by web browsers; the other serves XML and is
+      intended for use by automated clients.</p><div class="sidebar"><a id="I_sidebar2_tt103"/><div class="sidebar-title">XPath Exposition</div><p>Reading from right to left, the expression <code class="literal">/ResultSet/Result/Title/[]</code> <a id="I_indexterm2_tt104" class="indexterm"/><a id="I_indexterm2_tt105" class="indexterm"/>means:</p><div class="informaltable"><table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col/><col/></colgroup><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Find the direct children</td><td style="border-bottom: 0.5pt solid ; ">[ ]</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">of every <code class="literal">Title</code>
+                tag</td><td style="border-bottom: 0.5pt solid ; ">Title/</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">that’s the direct child of a <code class="literal">Result</code> tag</td><td style="border-bottom: 0.5pt solid ; ">Result/</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">that’s the direct child of the <code class="literal">ResultSet</code> tag</td><td style="border-bottom: 0.5pt solid ; ">ResultSet/</td></tr><tr><td style="border-right: 0.5pt solid ; ">at the root of the document.</td><td>/<a id="I_indexterm2_tt106" class="indexterm"/> <a id="I_indexterm2_tt107" class="indexterm"/></td></tr></tbody></table></div><p>If you look at the XML files served by the Yahoo! search
+        service, you’ll see a <code class="literal">ResultSet</code> tag
+        that contains <code class="literal">Result</code> tags, each of
+        which contains a <code class="literal">Title</code> tag. The
+        contents of those tags are what I’m after in <a class="xref" href="ch02.html#yahoowebsearch" title="Example 2-1. Searching the Web with Yahoo!’s web service">Example 2-1</a>.</p></div><p>There is no magic dust that makes an HTTP request a web service
+      request. You can make requests to a RESTful or hybrid web service using
+      nothing but your programming language’s HTTP client library. You can
+      process the results with a standard XML parser. Every web service
+      request involves the same three steps:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Come up with the data that will go into the HTTP request: the
+          HTTP method, the URI, any HTTP headers, and (for requests using the
+          PUT or POST method) any document that needs to go in the request’s
+          entity-body.</p></li><li class="listitem"><p>Format the data as an HTTP request, and send it to the
+          appropriate HTTP server.</p></li><li class="listitem"><p>Parse the response data—the response code, any headers, and
+          any entity-body—into the data structures the rest of your program
+          needs.</p></li></ol></div><p>In this chapter I show how different programming languages and
+      libraries implement this three-step process.</p><div class="sect2" title="Wrappers, WADL, and ActiveResource"><div class="titlepage"><div><div><h3 class="title" id="id430265">Wrappers, WADL, and ActiveResource</h3></div></div></div><p>Although a<a id="I_indexterm2_tt108" class="indexterm"/><a id="I_indexterm2_tt109" class="indexterm"/> web service request is just an HTTP request, any given
+        web service has a logic and a structure that is missing from the World
+        Wide Web as a whole. If you follow the three-step algorithm every time
+        you make a web service request, your code will be a mess and you’ll
+        never take advantage of that underlying structure.</p><p>Instead, as a smart programmer you’ll quickly notice the
+        patterns underlying your requests to a given service, and write
+        wrapper methods that abstract away the details of HTTP access. The
+        <code class="function">print_page_titles</code> method defined
+        in <a class="xref" href="ch02.html#yahoowebsearch" title="Example 2-1. Searching the Web with Yahoo!’s web service">Example 2-1</a> is a primitive wrapper. As a web
+        service gets popular, its users release polished wrapper libraries in
+        various languages. Some service providers offer official wrappers:
+        <a id="I_indexterm2_tt110" class="indexterm"/>Amazon gives away clients in five different languages
+        for its RESTful S3 service. That hasn’t stopped outside programmers
+        from writing their own S3 client libraries, like <a id="I_indexterm2_tt111" class="indexterm"/><span class="application">jbucket</span> and
+        <a id="I_indexterm2_tt112" class="indexterm"/><span class="application">s3sh</span>.</p><p>Wrappers make service programming easy, because the API of a
+        wrapper library is tailored to one particular service. You don’t have
+        to think about HTTP at all. The downside is that each wrapper is
+        slightly different: learning one wrapper doesn’t prepare you for the
+        next one.</p><p>This is a little disappointing. After all, these services are
+        just variations on the three-step algorithm for making HTTP requests.
+        Shouldn’t there be some way of abstracting out the differences between
+        services, some library that can act as a wrapper for the entire space
+        of RESTful and hybrid services?</p><p>This is the problem of service description. We need a language
+        with a vocabulary that can describe the variety of RESTful and hybrid
+        services. A document written in this language could script a generic
+        web service client, making it act like a custom-written wrapper. The
+        SOAP RPC community has united around WSDL as its service description
+        language. The REST community has yet to unite around a description
+        language, so in this book I do my bit to promote WADL as a
+        resource-oriented alternative to WSDL. I think it’s the simplest and
+        most elegant solution that solves the whole problem. I show a simple
+        WADL client in this chapter and it is covered in detail in the <a class="xref" href="ch09.html#servicedescription" title="WADL">WADL</a>” section.</p><p class="keep-together">There’s also a generic client
+        called<a id="I_indexterm2_tt113" class="indexterm"/> ActiveResource, still in development. ActiveResource
+        makes it easy to write clients for many kinds of web services written
+        with the Ruby on Rails framework. I cover ActiveResource at the end of
+        <a class="xref" href="ch03.html" title="Chapter 3. What Makes RESTful Services Different?">Chapter 3</a>.</p></div></div><div class="sect1" title="del.icio.us: The Sample Application"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="delicious-intro">del.icio.us: The Sample Application</h2></div></div></div><p>In this chapter<a id="ch02_delicious" class="indexterm"/> I walk through the life cycle of a web service request
+      from the client’s point of view. Though most of this book’s code
+      examples are written in Ruby, in this chapter I show code written in a
+      variety of programming languages. My example throughout this chapter is
+      the web service provided by the social bookmarking web site <a class="ulink" href="http://del.icio.us/" target="_top">del.icio.us</a>. You can read a prose
+      description of this web service at <a class="ulink" href="http://del.icio.us/help/api/" target="_top">http://del.icio.us/help/api/</a>.</p><div class="tip" title="Tip"><h3 class="title">Tip</h3><p>If you’re not familiar with del.icio.us, here’s a brief
+        digressionary introduction. del.icio.us is a web site that works like
+        your web browser’s bookmark<a id="I_indexterm2_tt114" class="indexterm"/><a id="ch02_book" class="indexterm"/> feature, but it’s public and better-organized (see
+        <a class="xref" href="ch02.html#delicious-screenshot" title="Figure 2-1. del.icio.us screenshot">Figure 2-1</a>). When you save a link to
+        del.icio.us, it’s associated with your account so you can find it
+        later. You can also share your bookmarks with others.</p><p>You can associate short strings, called
+        <em class="firstterm">tags</em>, with <a id="I_indexterm2_tt115" class="indexterm"/>a URI. Tags are versatile little suckers. They make it
+        easy for you to find a URI later, they make it possible to group URIs
+        together, and when multiple people tag the same URI, they create a
+        machine-readable vocabulary for that URI.</p></div><div class="figure"><a id="delicious-screenshot"/><div class="figure-contents"><div class="mediaobject"><a id="I_mediaobject2_tt116"/><img src="httpatomoreillycomsourceoreillyimages24556.png.jpg" alt="del.icio.us screenshot"/></div></div><div class="figure-title">Figure 2-1. del.icio.us screenshot</div></div><p>The del.icio.us web service gives you programmatic access to your
+      bookmarks. You can write programs that bookmark URIs, convert your
+      browser bookmarks to del.icio.us bookmarks, or fetch the URIs you’ve
+      bookmarked in the past. The best way to visualize the del.icio.us web
+      service is to use the human-oriented web site for a while. There’s no
+      fundamental difference between the del.icio.us web site and the
+      del.icio.us web service, but there are variations:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>The web site is rooted at <a class="ulink" href="http://del.icio.us/" target="_top">http://del.icio.us/</a> and the web service is rooted at
+          <a class="ulink" href="https://api.del.icio.us/v1/" target="_top">https://api.del.icio.us/v1/</a>. The web site
+          communicates with clients through HTTP, the web service uses secure
+          HTTPS.</p></li><li class="listitem"><p>The web site and the web service expose different URI
+          structures. To get your recent bookmarks from the web site, you
+          fetch <code class="literal">https://del.icio.us/<em class="replaceable"><code>{your-username}</code></em></code>.
+          To get your recent bookmarks from the web service, you fetch <a class="ulink" href="https://api.del.icio.us/v1/posts/recent" target="_top">https://api.del.icio.us/v1/posts/recent</a>.</p></li><li class="listitem"><p>The web site serves HTML documents, and the web service serves
+          XML documents. The formats are different, but they contain the same
+          data.</p></li><li class="listitem"><p>The web site lets you see a lot of information without logging
+          in or even having an account. The web service makes you authenticate
+          for every request.</p></li><li class="listitem"><p>Both offer features for personal bookmark management, but the
+          web site also has social features. On the web site, you can see
+          lists of URIs other people have bookmarked, lists of people who have
+          bookmarked a particular URI, lists of URIs tagged with a certain
+          tag, and lists of popular bookmarks. The web service only lets you
+          see your own bookmarks.</p></li></ul></div><p>These variations are important but they don’t make the web service
+      a different kind of thing from the web site. The web service is a
+      stripped-down web site that uses HTTPS and serves funny-looking
+      documents. (You can flip this around and look at the web site as a more
+      functional web service, though the del.icio.us administrators discourage
+      this viewpoint.) This is a theme I’m coming back to again and again: web
+      services should work under the same rules as web sites.</p><p>Aside from its similarity to a web site, the del.icio.us web
+      service does not have a very RESTful design. The programmers have laid
+      out the service URIs in a way that suggests an RPC-style rather than a
+      resource-oriented design. All requests to the del.icio.us web service
+      use the HTTP GET method: the real method information goes into the URI
+      and might conflict with “GET”. A couple sample URIs should illustrate
+      this point: consider <em class="filename">https://api.del.icio.us/v1/posts/add</em> and
+      <em class="filename">https://api.del.icio.us/v1/tags/rename</em>.
+      Though there’s no explicit <code class="varname">methodName</code> variable, the
+      del.icio.us API is just like the Flickr API I covered in <a class="xref" href="ch01.html" title="Chapter 1. The Programmable Web and Its Inhabitants">Chapter 1</a>. The method information (“add” and
+      “rename”) is kept in the URIs, not in the HTTP method.</p><p>So why have I chosen del.icio.us for the sample clients in this
+      chapter? Three reasons. First, del.icio.us is an easy application to
+      understand, and its web service is popular and easy to use.</p><p>Second, I want to make it clear that what I say in the coming
+      chapters is prescriptive, not descriptive. When you implement a web
+      service, following the constraints of REST will give your clients a
+      nice, usable web service that acts like the web. But when you implement
+      a web service <span class="emphasis"><em>client</em></span>, you have to work with the
+      service as it is. The only alternatives are to lobby for a change or
+      boycott the service. If a web service designer has never heard of REST,
+      or thinks that hybrid services are “RESTful,” there’s little you can do
+      about it. Most existing services are hybrids or full-blown RPC services.
+      A snooty client that can feed only on the purest of REST services isn’t
+      very useful, and won’t be for the forseeable future. Servers should be
+      idealistic; clients must be pragmatic. This is a variant of Postel’s
+      Law: “Be conservative in what you do; be liberal in which you accept
+      from others.”</p><p>Third, in <a class="xref" href="ch07.html" title="Chapter 7. A Service Implementation">Chapter 7</a> I present a
+      bookmark-tracking web service that’s similar to del.icio.us but designed
+      on RESTful principles. I want to introduce the social bookmarking domain
+      to you now, so you’ll be thinking about it as I introduce the principles
+      of REST and my Resource-Oriented Architecture. In <a class="xref" href="ch07.html" title="Chapter 7. A Service Implementation">Chapter 7</a>, when I design and implement a RESTful
+      interface to del.icio.us-like functionality, you’ll see the
+      difference.</p><div class="sect2" title="What the Sample Clients Do"><div class="titlepage"><div><div><h3 class="title" id="id370906">What the Sample Clients Do</h3></div></div></div><p>In the sections that follow, I show you simple del.icio.us
+        clients in a variety of programming languages. All of these clients do
+        exactly the same thing, and it’s worth spelling out what that is.
+        First, they open up a<a id="I_indexterm2_tt117" class="indexterm"/> TCP/IP socket connection to port 443 (the standard
+        HTTPS port) on the server at <code class="literal">api.del.icio.us</code>. Then they send something
+        like the HTTP request in <a class="xref" href="ch02.html#delicious-http-request" title="Example 2-2. A possible request to the del.icio.us web service">Example 2-2</a>.
+        Like all HTTP responses, this one has three parts: a status code, a
+        set of headers, and an entity-body. In this case, the
+        entity-body<a id="I_indexterm2_tt118" class="indexterm"/> is an XML document.</p><div class="example"><a id="delicious-http-request"/><div class="example-title">Example 2-2. A possible request to the del.icio.us web service</div><div class="example-contents"><pre class="screen">GET /v1/posts/recent HTTP/1.1
+Host: api.del.icio.us
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=</pre></div></div><p>The del.icio.us web service sends back something like the HTTP
+        response in <a class="xref" href="ch02.html#delicious-http-response" title="Example 2-3. A possible response from the del.icio.us web service">Example 2-3</a>, then closes
+        the socket connection.</p><div class="example"><a id="delicious-http-response"/><div class="example-title">Example 2-3. A possible response from the del.icio.us web service</div><div class="example-contents"><pre class="screen">200 OK
+Content-Type: text/xml
+Date: Sun, 29 Oct 2006 15:09:36 GMT
+Connection: close
+
+&lt;?xml version='1.0' standalone='yes'?&gt;
+&lt;posts tag="" user="username"&gt;
+  &lt;post href="http://www.foo.com/" description="foo" extended=""
+   hash="14d59bdc067e3c1f8f792f51010ae5ac" tag="foo"
+   time="2006-10-29T02:56:12Z" /&gt;
+  &lt;post href="http://amphibians.com/" description="Amphibian Mania"
+   extended="" hash="688b7b2f2241bc54a0b267b69f438805" tag="frogs toads"
+   time="2006-10-28T02:55:53Z" /&gt;
+&lt;/posts&gt;</pre></div></div><p>The clients I write are only interested in the entity-body part.
+        Specifically, they’re only interested in the <code class="literal">href</code> and <code class="literal">description</code> attributes of the <code class="literal">post</code> tags. They’ll parse the XML document
+        into a data structure and use the<a id="I_indexterm2_tt119" class="indexterm"/> XPath expression <code class="literal">/posts/post</code> to iterate over the <code class="literal">post</code> tags. They’ll print to standard output
+        the <code class="literal">href</code> and <code class="literal">description</code> attribute of every del.icio.us
+        bookmark:<a id="I_indexterm2_tt120" class="indexterm"/><a id="I_indexterm2_tt121" class="indexterm"/></p><div class="informalexample"><pre class="screen">foo: http://www.foo.com/
+Amphibian Mania: http://amphibians.com/</pre></div><div class="sidebar"><a id="I_sidebar2_tt122"/><div class="sidebar-title">XPath Exposition</div><p>Reading from right to left, the XPath expression <code class="literal">/posts/post</code> means:</p><div class="informaltable"><table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col/><col/></colgroup><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Find every <code class="literal">post</code>
+                  tag</td><td style="border-bottom: 0.5pt solid ; ">post</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">that’s the direct child of the <code class="literal">posts</code> tag</td><td style="border-bottom: 0.5pt solid ; ">posts/</td></tr><tr><td style="border-right: 0.5pt solid ; ">at the root of the document.</td><td>/</td></tr></tbody></table></div></div><p>To use any of these clients, you’ll need to create a del.icio.us
+        account. Some of the clients hard-code the strings “username” and
+        “password”; you’ll need to substitute your del.icio.us username and
+        password.</p></div></div><div class="sect1" title="Making the Request: HTTP Libraries"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="httplibraries">Making the Request: HTTP Libraries</h2></div></div></div><p>Every <a id="ch02_httplibraries" class="indexterm"/>modern<a id="ch02_libs" class="indexterm"/> programming language has one or more libraries for making
+      HTTP requests. Not all of these libraries are equally useful, though. To
+      build a fully general web service client you need an HTTP library with
+      these features:</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>It must support<a id="I_indexterm2_tt123" class="indexterm"/><a id="I_indexterm2_tt124" class="indexterm"/> HTTPS and SSL certificate validation. Web services,
+          like web sites, use HTTPS to secure communication with their
+          clients. Many web services (del.icio.us is one example) won’t accept
+          plain HTTP requests at all. A library’s HTTPS support often depends
+          on the presense of an external SSL library written in C.</p></li><li class="listitem"><p>It must support at least the five main HTTP methods:<a id="I_indexterm2_tt125" class="indexterm"/><a id="I_indexterm2_tt126" class="indexterm"/><a id="I_indexterm2_tt127" class="indexterm"/><a id="I_indexterm2_tt128" class="indexterm"/><a id="I_indexterm2_tt129" class="indexterm"/> GET, HEAD, POST, PUT, and DELETE. Some libraries
+          support only GET and POST. Others are designed for simplicity and
+          support only GET.</p><p>You can get pretty far with a client that only supports GET
+          and POST: HTML forms support only those two methods, so the entire
+          human web is open to you. You can even do all right with just GET,
+          because many web services (among them del.icio.us and Flickr) use
+          GET even where they shouldn’t. But if you’re choosing a library for
+          all your web service clients, or writing a general client like a
+          WADL client, you need a library that supports all five methods.
+          Additional methods like<a id="I_indexterm2_tt130" class="indexterm"/><a id="I_indexterm2_tt131" class="indexterm"/> OPTIONS and TRACE, and<a id="I_indexterm2_tt132" class="indexterm"/> WebDAV
+          extensions like MOVE, are a bonus.</p></li><li class="listitem"><p>It must allow the programmer to customize the data sent as
+          the<a id="I_indexterm2_tt133" class="indexterm"/> entity-body of a PUT or POST request.</p></li><li class="listitem"><p>It must allow the programmer to customize a request’s HTTP
+          headers.</p></li><li class="listitem"><p>It must give the programmer access to the response code and
+          headers of an HTTP response; not just access to the
+          entity-body.</p></li><li class="listitem"><p>It must be able to communicate through an HTTP proxy. The
+          average programmer may not think about this, but many HTTP clients
+          in corporate environments can only work through a proxy.
+          Intermediaries like HTTP proxies are also a standard part of the
+          REST meta-architecture, though not one I’ll be covering in much
+          detail.</p></li></ul></div><div class="sect2" title="Optional Features"><div class="titlepage"><div><div><h3 class="title" id="id429782">Optional Features</h3></div></div></div><p>There are also some features of an HTTP library that make life
+        easier as you write<a id="I_indexterm2_tt134" class="indexterm"/> clients for RESTful and hybrid services. These features
+        mostly boil down to knowledge about HTTP headers, so they’re
+        technically optional. You can implement them yourself so long as your
+        library gives you access to request and response HTTP headers. The
+        advantage of library support is that you don’t have to worry about the
+        details.</p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>An HTTP library should automatically request data in
+            compressed form to save bandwidth, and transparently decompress
+            the data it receives. The HTTP request header here is<a id="I_indexterm2_tt135" class="indexterm"/> <code class="literal">Accept-Encoding</code>,
+            and the response header is <code class="literal">Encoding</code>. I discuss these in more detail
+            in <a class="xref" href="ch08.html" title="Chapter 8. REST and ROA Best Practices">Chapter 8</a>.</p></li><li class="listitem"><p>It should automatically cache the responses to your
+            requests. The second time you request a URI, it should return an
+            item from the cache if the object on the server hasn’t changed.
+            The HTTP headers<a id="I_indexterm2_tt136" class="indexterm"/><a id="I_indexterm2_tt137" class="indexterm"/><a id="I_indexterm2_tt138" class="indexterm"/> here are <code class="literal">ETag</code>
+            and <code class="literal">If-Modified-Since</code> for the
+            request, and <code class="literal">Etag</code> and <code class="literal">Last-Modified</code> for the response. These,
+            too, I discuss in <a class="xref" href="ch08.html" title="Chapter 8. REST and ROA Best Practices">Chapter 8</a>.</p></li><li class="listitem"><p>It should transparently support the most common forms of
+            HTTP authentication:<a id="I_indexterm2_tt139" class="indexterm"/><a id="I_indexterm2_tt140" class="indexterm"/><a id="I_indexterm2_tt141" class="indexterm"/><a id="I_indexterm2_tt142" class="indexterm"/> Basic, Digest, and WSSE. It’s useful to support
+            custom, company-specific authentication methods such as Amazon’s,
+            or to have plug-ins that support them.</p><p>The request header is<a id="I_indexterm2_tt143" class="indexterm"/> <code class="literal">Authorization</code>
+            and the response header (the one that demands authentication) is
+            <code class="literal">WWW-Authenticate</code>. I cover the
+            standard HTTP authentication methods, plus WSSE, in <a class="xref" href="ch08.html" title="Chapter 8. REST and ROA Best Practices">Chapter 8</a>. I cover Amazon’s custom authentication
+            method in <a class="xref" href="ch03.html" title="Chapter 3. What Makes RESTful Services Different?">Chapter 3</a>.</p></li><li class="listitem"><p>It should be able to transparently follow HTTP redirects,
+            while avoiding infinite<a id="I_indexterm2_tt144" class="indexterm"/> redirects and redirect loops. This should be an
+            optional convenience for the user, rather than something that
+            happens on every single redirect. A web service may reasonably
+            send a status code of 303 (“See Other”) without implying that the
+            client should <span class="emphasis"><em>go fetch that other URI right
+            now!</em></span></p></li><li class="listitem"><p>It should be able to parse and create HTTP cookie strings,
+            rather than forcing the programmer to manually set the <code class="literal">Cookie</code> header. This is not very
+            important for RESTful services, which shun cookies, but it’s very
+            important if you want to use the human web.</p></li></ul></div><p>When you’re writing code against a specific service, you may be
+        able to do without some or all of these features. Ruby’s
+        standard<a id="I_indexterm2_tt145" class="indexterm"/> <code class="literal">open-uri</code> library
+        only supports GET requests. If you’re writing a client for
+        del.icio.us, there’s no problem, since that web service expects only
+        GET requests. But try to use <code class="literal">open-uri</code> with Amazon S3 (which uses GET,
+        HEAD, PUT, and DELETE), and you’ll quickly run into a wall. In the
+        next sections I recommend good HTTP client libraries for some popular
+        programming languages.</p></div><div class="sect2" title="Ruby: rest-open-uri and net/http"><div class="titlepage"><div><div><h3 class="title" id="id430046">Ruby: rest-open-uri and net/http</h3></div></div></div><p>Ruby <a id="I_indexterm2_tt146" class="indexterm"/>comes with two HTTP client libraries,<a id="I_indexterm2_tt147" class="indexterm"/><a id="I_indexterm2_tt148" class="indexterm"/> <code class="literal">open-uri</code> and the
+        lower-level <code class="literal">net/http</code>. Either can
+        make HTTPS requests if you’ve got the <code class="literal">net/https</code> extension installed. Windows
+        installations of Ruby should be able to make HTTPS requests out of the
+        box. If you’re not on Windows, you may have to install <code class="literal">net/https</code> separately.<sup>[<a id="id414573" href="#ftn.id414573" class="footnote">8</a>]</sup></p><p>The <code class="literal">open-uri</code> library has a
+        simple and elegant interface that lets you treat URIs as filenames. To
+        read a web page, you simply <code class="function">open</code>
+        its URI and read data from the “filehandle.” You can pass in a hash to
+        <code class="literal">open</code> containing custom HTTP headers
+        and <code class="function">open</code>-specific keyword
+        arguments. This lets you set up a proxy, or specify authentication
+        information.</p><p>Unfortunately, right now <code class="literal">open-uri</code> only supports one HTTP method:
+        GET<a id="I_indexterm2_tt152" class="indexterm"/>. That’s why I’ve made some minor modifications to
+        <code class="literal">open-uri</code> and made the result
+        available as the <code class="literal">rest-open-uri</code> Ruby
+        gem.<sup>[<a id="id414702" href="#ftn.id414702" class="footnote">9</a>]</sup> I’ve added two keyword arguments to <code class="function">open</code>:<code class="literal">
+        method</code>, which lets you customize the HTTP method, and
+        <code class="literal">:body</code>, which lets you send data in
+        the entity-body.</p><p><a class="xref" href="ch02.html#ruby-delicious" title="Example 2-4. A Ruby client using open-uri">Example 2-4</a> is an implementation of the
+        standard del.icio.us example using the <code class="literal">open-uri</code> library (<code class="literal">rest-open-uri</code> works the same way). This code
+        parses the response document using the<a id="I_indexterm2_tt155" class="indexterm"/> <code class="classname">REXML::Document</code> parser, which
+        you’ve seen before.</p><div class="example"><a id="ruby-delicious"/><div class="example-title">Example 2-4. A Ruby client using open-uri</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby -w
+# delicious-open-uri.rb
+
+
+require 'open-uri'
+require 'rexml/document'
+
+# Fetches a del.icio.us user's recent bookmarks, and prints each one.
+def print_my_recent_bookmarks(username, password)
+  # Make the HTTPS request.
+  response = open('https://api.del.icio.us/v1/posts/recent',
+                  :http_basic_authentication =&gt; [username, password])
+
+  # Read the response entity-body as an XML document.
+  xml = response.read
+
+  # Turn the document into a data structure.
+  document = REXML::Document.new(xml)
+
+  # For each bookmark...
+  REXML::XPath.each(document, "/posts/post") do |e|
+    # Print the bookmark's description and URI
+    puts "#{e.attributes['description']}: #{e.attributes['href']}"
+  end
+end
+
+# Main program
+username, password = ARGV
+unless username and password
+  puts "Usage: #{$0} [username] [password]"
+  exit
+end
+print_my_recent_bookmarks(username, password)</pre></div></div><p>I mentioned earlier that Ruby’s stock <code class="literal">open-uri</code> can only make HTTP GET requests.
+        For many purposes, GET is enough, but if you want to write a Ruby
+        client for a fully RESTful service like Amazon’s S3, you’ll either
+        need to use <code class="literal">rest-open-uri</code>, or turn
+        to Ruby’s low-level HTTP library: <code class="literal">net/http</code>.</p><p>This built-in library provides <a id="I_indexterm2_tt156" class="indexterm"/>the <code class="classname">Net::HTTP</code> class, which has
+        several methods for making HTTP requests (see <a class="xref" href="ch02.html#table_1" title="Table 2-1. HTTP feature matrix for Ruby HTTP client libraries">Table 2-1</a>). You can build a complete HTTP client out of
+        this class, using nothing more than the Ruby standard library. In
+        fact, <code class="literal">open-uri</code> and <code class="literal">rest-open-uri</code> are based on
+        <code class="classname">Net::HTTP</code>. Those libraries only exist because
+        <code class="classname">Net::HTTP</code> provides no simple, easy-to-use
+        interface that supports all the features a REST client needs (proxies,
+        HTTPS, headers, and so on). That’s why I recommend you use <code class="literal">rest-open-uri</code>.</p><div class="table"><a id="table_1"/><div class="table-title">Table 2-1. HTTP feature matrix for Ruby HTTP client libraries</div><div class="table-contents"><table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col/><col/><col/><col/></colgroup><thead><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> </td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">open-uri</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">rest-open-uri</td><td style="border-bottom: 0.5pt solid ; ">Net:HTTP</td></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTPS<sup>[<a id="id417252" href="#ftn.id417252" class="footnote">a</a>]</sup></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTP verbs</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">GET</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">All</td><td style="border-bottom: 0.5pt solid ; ">All</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom data</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom headers</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Proxies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Compression</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Caching</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Auth methods</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Basic</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Basic</td><td style="border-bottom: 0.5pt solid ; ">Basic</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Cookies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">No</td></tr><tr><td style="border-right: 0.5pt solid ; ">Redirects</td><td style="border-right: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; ">Yes</td><td>No</td></tr></tbody><tbody class="footnotes"><tr><td colspan="4"><div class="footnote" id="ftn.id417252"><p><sup>[<a href="#id417252" class="para">a</a>] </sup>Assuming the <code class="literal">net/https</code> library is
+                    installed</p></div></td></tr></tbody></table></div></div></div><div class="sect2" title="Python: httplib2"><div class="titlepage"><div><div><h3 class="title" id="id417449">Python: httplib2</h3></div></div></div><p>The Python <a id="I_indexterm2_tt157" class="indexterm"/><a id="I_indexterm2_tt158" class="indexterm"/>standard library comes with two<a id="I_indexterm2_tt159" class="indexterm"/><a id="I_indexterm2_tt160" class="indexterm"/> HTTP clients: <code class="literal">urllib2</code>, which has a file-like interface
+        like Ruby’s <code class="literal">open-uri</code>; and <code class="literal">httplib</code>, which works more like Ruby’s
+        <code class="classname">Net::HTTP</code>. Both offer transparent support for
+        HTTPS, assuming your copy of Python was compiled with SSL support.
+        There’s also an excellent third-party library,<a id="I_indexterm2_tt161" class="indexterm"/> Joe Gregorio’s <a class="ulink" href="http://bitworking.org/projects/httplib2/" target="_top"><code class="literal">httplib2</code></a>, which is the one I
+        recommend in general. <code class="literal">httplib2</code> is
+        an excellent piece of software, supporting nearly every feature on my
+        wish list—most notably, transparent caching. <a class="xref" href="ch02.html#table_2" title="Table 2-2. HTTP feature matrix for Python HTTP client libraries">Table 2-2</a> lists the features available in each
+        library.</p><div class="table"><a id="table_2"/><div class="table-title">Table 2-2. HTTP feature matrix for Python HTTP client libraries</div><div class="table-contents"><table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col/><col/><col/><col/></colgroup><thead><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> </td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">urllib2</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">httplib</td><td style="border-bottom: 0.5pt solid ; ">httplib2</td></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTPS<sup>[<a id="id411971" href="#ftn.id411971" class="footnote">a</a>]</sup></td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTP verbs</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">GET, POST</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">All</td><td style="border-bottom: 0.5pt solid ; ">All</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom data</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom headers</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Proxies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">No</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Compression</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Caching</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Auth methods</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Basic, Digest</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">None</td><td style="border-bottom: 0.5pt solid ; ">Basic, Digest, WSSE, Google</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Cookies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes (Use <code class="literal">urllib2.build_opener(HTTPCookieProcessor)</code>)</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">No</td></tr><tr><td style="border-right: 0.5pt solid ; ">Redirects</td><td style="border-right: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; ">No</td><td>Yes</td></tr></tbody><tbody class="footnotes"><tr><td colspan="4"><div class="footnote" id="ftn.id411971"><p><sup>[<a href="#id411971" class="para">a</a>] </sup>Assuming Python was compiled with SSL support</p></div></td></tr></tbody></table></div></div><p><a class="xref" href="ch02.html#example_5" title="Example 2-5. A del.icio.us client in Python">Example 2-5</a> is a del.icio.us client that uses
+        <code class="literal">httplib2</code>. It uses the ElementTree
+        library to parse the del.icio.us XML.</p><div class="example"><a id="example_5"/><div class="example-title">Example 2-5. A del.icio.us client in Python</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/python2.5
+# delicious-httplib2.py
+import sys
+from xml.etree import ElementTree
+import httplib2
+
+# Fetches a del.icio.us user's recent bookmarks, and prints each one.
+def print_my_recent_bookmarks(username, password):
+    client = httplib2.Http(".cache")
+    client.add_credentials(username, password)
+
+    # Make the HTTP request, and fetch the response and the entity-body.
+    response, xml = client.request('https://api.del.icio.us/v1/posts/recent')
+
+    # Turn the XML entity-body into a data structure.
+    doc = ElementTree.fromstring(xml)
+
+    # Print information about every bookmark.
+    for post in doc.findall('post'):
+        print "%s: %s" % (post.attrib['description'], post.attrib['href'])
+
+# Main program
+if len(sys.argv) != 3:
+    print "Usage: %s [username] [password]" % sys.argv[0]
+    sys.exit()
+
+username, password = sys.argv[1:]
+print_my_recent_bookmarks(username, password)</pre></div></div></div><div class="sect2" title="Java: HttpClient"><div class="titlepage"><div><div><h3 class="title" id="id412200">Java: <span class="application">HttpClient</span></h3></div></div></div><p>The Java<a id="I_indexterm2_tt162" class="indexterm"/><a id="I_indexterm2_tt163" class="indexterm"/> standard library comes with an HTTP<a id="I_indexterm2_tt164" class="indexterm"/> client,
+        <code class="classname">java.net.HttpURLConnection</code>. You can get an
+        instance by calling <code class="function">open</code> on
+        <a id="I_indexterm2_tt165" class="indexterm"/>a <code class="classname">java.net.URL</code> object. Though it
+        supports most of the basic features of HTTP, programming to its API is
+        very difficult. The Apache Jakarta project has a competing client
+        called <a class="ulink" href="http://jakarta.apache.org/commons/httpclient/" target="_top"><span class="application">HttpClient</span></a>, which has a better
+        design. There’s also <a class="ulink" href="http://www.restlet.org/" target="_top"><span class="application">Restlet</span></a>. I cover Restlet as a
+        server library in <a class="xref" href="ch12.html" title="Chapter 12. Frameworks for RESTful Services">Chapter 12</a>, but it’s also an HTTP
+        client library. The class <code class="classname">org.restlet.Client</code>
+        makes it easy to make simple HTTP requests, and the class
+        <code class="classname">org.restlet.data.Request</code> hides the
+        <code class="classname">HttpURLConnection</code> programming necessary to make
+        more complex requests. <a class="xref" href="ch02.html#table_3" title="Table 2-3. HTTP feature matrix for Java HTTP client libraries.">Table 2-3</a> lists the features
+        available in each library.</p><div class="table"><a id="table_3"/><div class="table-title">Table 2-3. HTTP feature matrix for Java HTTP client libraries.</div><div class="table-contents"><table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col/><col/><col/><col/></colgroup><thead><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> </td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HttpURLConnection</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "><span class="application">HttpClient</span></td><td style="border-bottom: 0.5pt solid ; "><span class="application">Restlet</span></td></tr></thead><tbody><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTPS</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">HTTP verbs</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">All</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">All</td><td style="border-bottom: 0.5pt solid ; ">All</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom data</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Custom headers</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Proxies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Compression</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Caching</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">No</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Auth methods</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Basic, Digest, NTLM</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Basic, Digest, NTLM</td><td style="border-bottom: 0.5pt solid ; ">Basic, Amazon</td></tr><tr><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Cookies</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Yes</td><td style="border-bottom: 0.5pt solid ; ">Yes</td></tr><tr><td style="border-right: 0.5pt solid ; ">Redirects</td><td style="border-right: 0.5pt solid ; ">Yes</td><td style="border-right: 0.5pt solid ; ">Yes</td><td>Yes</td></tr></tbody></table></div></div><p><a class="xref" href="ch02.html#example_6" title="Example 2-6. A del.icio.us client in Java">Example 2-6</a> is a Java client for del.icio.us
+        that uses HttpClient. It works in Java 1.5 and up, and it’ll work in
+        previous versions if you install the Xerces parser (see <a class="xref" href="ch02.html#javaparser" title="Java: javax.xml, Xerces, or XMLPull">Java: javax.xml, <span class="application">Xerces</span>, or <span class="application">XMLPull</span></a>” later in this chapter).</p><div class="example"><a id="example_6"/><div class="example-title">Example 2-6. A del.icio.us client in Java</div><div class="example-contents"><pre class="programlisting">// DeliciousApp.java
+import java.io.*;
+
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.*;
+import javax.xml.xpath.*;
+
+/**
+ * A command-line application that fetches bookmarks from del.icio.us
+ * and prints them to standard output.
+ */
+public class DeliciousApp
+{
+  public static void main(String[] args)
+    throws HttpException, IOException, ParserConfigurationException,
+           SAXException, XPathExpressionException
+  {
+    if (args.length != 2)
+    {
+      System.out.println("Usage: java -classpath [CLASSPATH] "
+                         + "DeliciousApp [USERNAME] [PASSWORD]");
+      System.out.println("[CLASSPATH] - Must contain commons-codec, " +
+                         "commons-logging, and commons-httpclient");
+      System.out.println("[USERNAME]  - Your del.icio.us username");
+      System.out.println("[PASSWORD]  - Your del.icio.us password");
+      System.out.println();
+
+      System.exit(-1);
+    }
+
+    // Set the authentication credentials.
+    Credentials creds = new UsernamePasswordCredentials(args[0], args[1]);
+    HttpClient client = new HttpClient();
+    client.getState().setCredentials(AuthScope.ANY, creds);
+
+    // Make the HTTP request.
+    String url = "https://api.del.icio.us/v1/posts/recent";
+    GetMethod method = new GetMethod(url);
+    client.executeMethod(method);
+    InputStream responseBody = method.getResponseBodyAsStream();
+
+    // Turn the response entity-body into an XML document.
+    DocumentBuilderFactory docBuilderFactory =
+      DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder =
+      docBuilderFactory.newDocumentBuilder();
+    Document doc = docBuilder.parse(responseBody);
+    method.releaseConnection();
+
+    // Hit the XML document with an XPath expression to get the list
+    // of bookmarks.
+    XPath xpath = XPathFactory.newInstance().newXPath();
+    NodeList bookmarks = (NodeList)xpath.evaluate("/posts/post", doc,
+                                                  XPathConstants.NODESET);
+
+    // Iterate over the bookmarks and print out each one.
+    for (int i = 0; i &lt; bookmarks.getLength(); i++)
+    {
+       NamedNodeMap bookmark = bookmarks.item(i).getAttributes();
+       String description = bookmark.getNamedItem("description")
+           .getNodeValue();
+       String uri = bookmark.getNamedItem("href").getNodeValue();
+       System.out.println(description + ": " + uri);
+    }
+
+    System.exit(0);
+  }
+}</pre></div></div></div><div class="sect2" title="C#: System.Web.HTTPWebRequest"><div class="titlepage"><div><div><h3 class="title" id="id417852">C#: System.Web.HTTPWebRequest</h3></div></div></div><p>The<a id="I_indexterm2_tt166" class="indexterm"/><a id="I_indexterm2_tt167" class="indexterm"/><a id="I_indexterm2_tt168" class="indexterm"/><a id="I_indexterm2_tt169" class="indexterm"/> .NET Common Language Runtime (CLR) <a id="I_indexterm2_tt170" class="indexterm"/>defines <code class="classname">HTTPWebRequest</code> for making
+        HTTP requests, and <code class="classname">NetworkCredential</code>
+        for<a id="I_indexterm2_tt171" class="indexterm"/> authenticating the client to the server. The <code class="classname">HTTPWebRequest</code> constructor takes a
+        URI. The <code class="classname">NetworkCredential</code> constructor takes a
+        username and password (see <a class="xref" href="ch02.html#example_7" title="Example 2-7. A del.icio.us client in C#">Example 2-7</a>).</p><div class="example"><a id="example_7"/><div class="example-title">Example 2-7. A del.icio.us client in C#</div><div class="example-contents"><pre class="programlisting">using System;
+using System.IO;
+using System.Net;
+using System.Xml.XPath;
+
+public class DeliciousApp {
+    static string user = "username";
+    static string password = "password";
+    static Uri uri = new Uri("https://api.del.icio.us/v1/posts/recent");
+
+    static void Main(string[] args) {
+        HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+        request.Credentials = new NetworkCredential(user, password);
+        HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+        XPathDocument xml = new
+	    XPathDocument(response.GetResponseStream());
+        XPathNavigator navigator = xml.CreateNavigator();
+        foreach (XPathNavigator node in navigator.Select("/posts/post")) {
+          string description = node.GetAttribute("description","");
+          string href = node.GetAttribute("href","");
+          Console.WriteLine(description + ": " + href);
+        }
+    }
+}</pre></div></div></div><div class="sect2" title="PHP: libcurl"><div class="titlepage"><div><div><h3 class="title" id="id429457">PHP: libcurl</h3></div></div></div><p>PHP<a id="I_indexterm2_tt172" class="indexterm"/><a id="I_indexterm2_tt173" class="indexterm"/> comes with a binding to the C library <code class="literal">libcurl</code>, which can do pretty much anything
+        you might want to do with a URI (see <a class="xref" href="ch02.html#example_8" title="Example 2-8. A del.icio.us client in PHP">Example 2-8</a>).</p><div class="example"><a id="example_8"/><div class="example-title">Example 2-8. A del.icio.us client in PHP</div><div class="example-contents"><pre class="programlisting">&lt;?php
+  $user = "username";
+  $password = "password";
+
+  $request = curl_init();
+  curl_setopt($request, CURLOPT_URL,
+              'https://api.del.icio.us/v1/posts/recent');
+  curl_setopt($request, CURLOPT_USERPWD, "$user:$password");
+  curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+
+  $response = curl_exec($request);
+  $xml = simplexml_load_string($response);
+  curl_close($request);
+
+  foreach ($xml-&gt;post as $post) {
+    print "$post[description]: $post[href]\n";
+  }
+?&gt;</pre></div></div></div><div class="sect2" title="JavaScript: XMLHttpRequest"><div class="titlepage"><div><div><h3 class="title" id="id429520">JavaScript: XMLHttpRequest</h3></div></div></div><p>If you’re writing<a id="I_indexterm2_tt174" class="indexterm"/><a id="I_indexterm2_tt175" class="indexterm"/> a web service client in JavaScript, you probably intend
+        it to run inside a web browser as part of an Ajax application. All
+        modern web browsers implement a HTTP client library for JavaScript
+        called <code class="classname">XMLHttpRequest</code>.</p><p>Because Ajax clients are developed differently from standalone
+        clients, I’ve devoted an entire chapter to them: <a class="xref" href="ch11.html" title="Chapter 11. Ajax Applications as REST Clients">Chapter 11</a>. The first example in that chapter is a del.icio.us
+        client, so you can skip there right now without losing the flow of the
+        examples.</p></div><div class="sect2" title="The Command Line: curl"><div class="titlepage"><div><div><h3 class="title" id="id429584">The Command Line: <span class="application">curl</span></h3></div></div></div><p>This <a id="I_indexterm2_tt176" class="indexterm"/>example is a bit different: it doesn’t use a programming
+        language at all. A program called <a class="ulink" href="http://curl.haxx.se/" target="_top">curl</a> is a capable HTTP client that
+        runs from the Unix or Windows command line. It supports most HTTP
+        methods, custom headers, several authentication mechanisms, proxies,
+        compression, and many other features. You can use <span class="application">curl</span> to do quick one-off HTTP requests,
+        or use it in conjunction with shell scripts. Here’s <span class="application">curl</span> in action, grabbing a user’s
+        del.icio.us bookmarks:</p><a id="I_programlisting2_tt177"/><pre class="programlisting"><code class="prompt">$</code> <strong class="userinput"><code>curl https://username:password@api.del.icio.us/v1/posts/recent</code></strong>
+<code class="computeroutput">&lt;?xml version='1.0' standalone='yes'?&gt;</code>
+<code class="computeroutput">&lt;posts tag="" user="username"&gt;</code>
+<code class="computeroutput"> ...</code>
+<code class="computeroutput">&lt;/posts&gt;</code></pre></div><div class="sect2" title="Other Languages"><div class="titlepage"><div><div><h3 class="title" id="id429662">Other Languages</h3></div></div></div><p>I don’t have the space or the expertise to cover every popular
+        programming language in depth with a del.icio.us client example. I
+        can, however, give brief pointers to HTTP client libraries for some of
+        the many languages I haven’t covered yet.</p><div class="variablelist"><dl><dt><span class="term">ActionScript</span></dt><dd><p>Flash applications,<a id="I_indexterm2_tt178" class="indexterm"/><a id="I_indexterm2_tt179" class="indexterm"/> like JavaScript applications, generally run
+              inside a web browser. This means that when you write an
+              ActionScript web service client you’ll probably use the Ajax
+              architecture described in <a class="xref" href="ch11.html" title="Chapter 11. Ajax Applications as REST Clients">Chapter 11</a>, rather than
+              the standalone architecture shown in this chapter.</p><p>ActionScript’s <code class="classname">XML</code> class gives
+              functionality similar to JavaScript’s
+              <code class="classname">XmlHttpRequest</code>. The <code class="function">XML.load</code> method fetches a URI and
+              parses the response document into an XML data structure.
+              ActionScript also provides a class called
+              <code class="classname">LoadVars</code>, which works on form-encoded
+              key-value pairs<a id="I_indexterm2_tt180" class="indexterm"/> instead of on XML documents.</p></dd><dt><span class="term">C</span></dt><dd><p>The <span class="application">libwww</span>
+              library for<a id="I_indexterm2_tt181" class="indexterm"/> C was the very first HTTP client library, but
+              most C programmers today use <a class="ulink" href="http://curl.haxx.se/libcurl/" target="_top"><span class="application">libcurl</span></a>, the basis for the
+              <span class="application">curl</span> command-line
+              tool. Earlier I mentioned PHP’s bindings to <span class="application">libcurl</span>, but there are also
+              bindings for more than 30 other languages. If you don’t like my
+              recommendations, or I don’t mention your favorite programming
+              language in this chapter, you might look at using the
+              <span class="application">libcurl</span>
+              bindings.</p></dd><dt><span class="term">C++</span></dt><dd><p>Use <span class="application">libcurl</span>,
+              <a id="I_indexterm2_tt182" class="indexterm"/>either directly or through an object-oriented
+              wrapper called <a class="ulink" href="http://rrette.com/curlpp.html" target="_top">cURLpp</a>.</p></dd><dt><span class="term">Common Lisp</span></dt><dd><p><a class="ulink" href="http://www.enterpriselisp.com/software/simple-http/" target="_top">simple-http</a>
+              is<a id="I_indexterm2_tt183" class="indexterm"/><a id="I_indexterm2_tt184" class="indexterm"/><a id="I_indexterm2_tt185" class="indexterm"/> easy to use, but doesn’t support anything but
+              basic HTTP GET and POST. The<a id="I_indexterm2_tt186" class="indexterm"/> <a class="ulink" href="http://opensource.franz.com/aserve/" target="_top">AllegroServe web
+              server library</a> includes a complete HTTP client
+              library.</p></dd><dt><span class="term">Perl</span></dt><dd><p>The standard HTTP<a id="I_indexterm2_tt187" class="indexterm"/><a id="I_indexterm2_tt188" class="indexterm"/><a id="I_indexterm2_tt189" class="indexterm"/> library for Perl is <span class="application">libwww-perl</span> (also known as LWP),
+              available from CPAN or most Unix packaging systems. <span class="application">libwww-perl</span> has a long history and
+              is one of the best-regarded Perl libraries. To get HTTPS
+              support, you should also install the
+              <code class="classname">Crypt:SSLeay</code> module<a id="I_indexterm2_tt190" class="indexterm"/> (available from CPAN).</p></dd></dl></div></div></div><div class="sect1" title="Processing the Response: XML Parsers"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="I_sect12_tt191">Processing the Response: XML Parsers</h2></div></div></div><p>The entity-body<a id="I_indexterm2_tt192" class="indexterm"/> is <a id="ch02_parsersxml" class="indexterm"/><a id="ch02_xmlparsers" class="indexterm"/>usually the most important part of an HTTP response. Where
+      web services are concerned, the entity-body is usually an XML document,
+      and the client gets most of the information it needs by running this
+      document through an XML parser.</p><p>Now, there are many HTTP client libraries, but they all have
+      exactly the same task. Given a URI, a set of headers, and a body
+      document, the client’s job is to construct an HTTP request and send it
+      to a certain server. Some libraries have more features than others:
+      cookies, authentication, caching, and the other ones I mentioned. But
+      all these extra features are implemented within the HTTP request,
+      usually as extra headers. A library might offer an object-oriented
+      interface (like <code class="classname">Net::HTTP</code>) <a id="I_indexterm2_tt193" class="indexterm"/>or a file-like interface (like <code class="literal">open-uri</code>),<a id="I_indexterm2_tt194" class="indexterm"/> but both interfaces do the same thing. There’s only one
+      kind of HTTP client library.</p><p>But there are <span class="emphasis"><em>three</em></span> kinds of XML parsers.
+      It’s not just that some XML parsers have features that others lack, or
+      that one interface is more natural than another. There are two basic XML
+      parsing strategies:<a id="I_indexterm2_tt195" class="indexterm"/><a id="I_indexterm2_tt196" class="indexterm"/> the document-based strategy of DOM and other tree-style
+      parsers, and the event-based strategy of SAX and “pull” parsers. You can
+      get a tree-style or a SAX parser for any programming language, and a
+      pull parser for almost any language.</p><p>The document-based, tree-style strategy is the simplest of the
+      three models. A <a id="I_indexterm2_tt197" class="indexterm"/>tree-style parser models an XML document as a nested data
+      structure. Once you’ve got this data structure, you can search and
+      process it with<a id="I_indexterm2_tt198" class="indexterm"/><a id="I_indexterm2_tt199" class="indexterm"/> XPath queries, CSS selectors, or custom navigation
+      functions: whatever your parser supports. A DOM parser is a tree-style
+      parser that implements a specific interface defined by the W3C.</p><p>The tree-style strategy is easy to use, and it’s the one I use the
+      most. With a tree-style parser, the document is just an object like the
+      other objects in your program. The big shortcoming is that you have to
+      deal with the document as a whole. You can’t start working on the
+      document until you’ve processed the whole thing into a tree, and you
+      can’t avoid loading the whole document into memory. For documents that
+      are simple but very large, this is inefficient. It would be a lot better
+      to handle tags as they’re parsed.</p><p>Instead of a data structure, a SAX-style or pull parser turns a
+      document into a stream of events. Starting and closing tags, XML
+      comments, and entity declarations are all events.</p><p>A <a id="I_indexterm2_tt200" class="indexterm"/>pull parser is useful when you need to handle almost every
+      event. A pull parser lets you handle one event at a time, “pulling” the
+      next one from the stream as needed. You can take action in response to
+      individual events as they come in, or build up a data structure for
+      later use—presumably a smaller data structure than the one a tree-style
+      parser would build. You can stop parsing the document at any time and
+      come back to it later by pulling the next event from the stream.</p><p>A SAX parser is more complex, but useful when you only care about
+      a few of the many events that will be streaming in. You drive a SAX
+      parser by registering callback methods with it. Once you’re done
+      defining callbacks, you set the parser loose on a document. The parser
+      turns the document into a series of events, and processes every event in
+      the document without stopping. When an event comes along that matches
+      one of your callbacks, the parser triggers that callback, and your
+      custom code runs. Once the callback completes, the SAX parser goes back
+      to processing events without stopping.</p><p>The advantage of the document-based approach is that it gives you
+      random access to the document’s contents. With event-based parsers, once
+      the events have fired, they’re gone. If you want to trigger them again
+      you need to re-parse the document. What’s more, an event-based parser
+      won’t notice that a malformed XML document is malformed until it tries
+      to parse the bad spot, and crashes. Before passing a document into an
+      event-based parser, you’ll need to make sure the document is well
+      formed, or else accept that your callback methods can be triggered for a
+      document that turns out not to be good.</p><p>Some programming languages come with a standard set of XML
+      parsers. Others have a canonical third-party parser library. For the
+      sake of performance, some languages also have bindings to fast parsers
+      written in C. I’d like to go through the list of languages again now,
+      and make recommendations for document- and event-based XML parsers. I’ll
+      rate commonly available parsers on speed, the quality of their
+      interface, how well they support XPath (for tree-style parsers), how
+      strict they are, and whether or not they support schema-based
+      validation. Depending on the application, a strict parser may be a good
+      thing (because an XML document will be parsed the correct way or not at
+      all) or a bad thing (because you want to use a service that generates
+      bad XML).</p><p>In the sample del.icio.us clients given above, I showed not only
+      how to use my favorite HTTP client library for a language, but how to
+      use my favorite tree-style parser for that language. To show you how
+      event-based parsers work, I’ll give two more examples of del.icio.us
+      clients using Ruby’s built-in SAX and pull parsers.</p><div class="sect2" title="Ruby: REXML, I Guess"><div class="titlepage"><div><div><h3 class="title" id="rubyparser">Ruby: REXML, I Guess</h3></div></div></div><p>Ruby<a id="ch02_rubyxmlparsers" class="indexterm"/><a id="ch02_rexml" class="indexterm"/> comes with a standard XML parser library, REXML, that
+        supports both DOM and SAX interfaces, and has good XPath support.
+        Unfortunately, REXML’s internals put it in a strange middle ground:
+        it’s too strict to be used to parse bad XML, but not strict enough to
+        reject <span class="emphasis"><em>all</em></span> bad XML.</p><p>I use REXML throughout this book because it’s the default
+        choice, and because I only deal with well-formed XML. If you want to
+        <span class="emphasis"><em>guarantee</em></span> that you only deal with well-formed
+        XML, you’ll need to install the Ruby bindings to the GNOME project’s
+        <a id="I_indexterm2_tt201" class="indexterm"/><span class="application">libxml2</span>
+        library (described in <a class="xref" href="ch02.html#otherlangparser" title="Other Languages">Other Languages</a>” later in
+        this chapter).</p><p>If you want to be able to handle bad markup, the best choice
+        is<a id="I_indexterm2_tt202" class="indexterm"/> <a class="ulink" href="http://github.com/whymirror/hpricot" target="_top">hpricot</a>, available
+        as the <code class="literal">hpricot</code> gem. It’s fast (it
+        uses a C extension), and it has an intuitive interface including
+        support for common XPath expressions.</p><p class="keep-together"><a class="xref" href="ch02.html#delicious-sax" title="Example 2-9. A Ruby client using a SAX parser">Example 2-9</a> is an
+        implementation of the del.icio.us client using REXML’s SAX interface.</p><div class="example"><a id="delicious-sax"/><div class="example-title">Example 2-9. A Ruby client using a SAX parser</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby -w
+# delicious-sax.rb
+require 'open-uri'
+require 'rexml/parsers/sax2parser'
+
+def print_my_recent_bookmarks(username, password)
+  # Make an HTTPS request and read the entity-body as an XML document.
+  xml = open('https://api.del.icio.us/v1/posts/recent',
+             :http_basic_authentication =&gt; [username, password])
+
+  # Create a SAX parser whose destiny is to parse the XML entity-body.
+  parser = REXML::Parsers::SAX2Parser.new(xml)
+
+  # When the SAX parser encounters a 'post' tag...
+  parser.listen(:start_element, ["post"]) do |uri, tag, fqtag, attributes|
+    # ...it should print out information about the tag.
+    puts "#{attributes['description']}: #{attributes['href']}"
+  end
+
+  # Make the parser fulfil its destiny to parse the XML entity-body.
+  parser.parse
+end
+
+# Main program.
+username, password = ARGV
+unless username and password
+  puts "Usage: #{$0} [USERNAME] [PASSWORD]"
+  exit
+end
+print_my_recent_bookmarks(username, password)</pre></div></div><p>In this program, the data isn’t parsed (or even read from the
+        HTTP connection) until the call to <code class="function">SAXParser#parse</code>. Up to that point I’m free
+        to call <code class="function">listen</code> and set up pieces
+        of code to run in response to parser events. In this case, the only
+        event I’m interested in is the start of a <code class="literal">post</code> tag. My code block gets called every
+        time the parser finds a <code class="literal">post</code> tag.
+        This is the same as parsing the XML document with a tree-style parser,
+        and running the XPath expression “//post” against the object tree.
+        What does my code block do? The same thing my other example programs
+        do when they find a <code class="literal">post</code> tag: print
+        out the values of the <code class="literal">description</code>
+        and <code class="literal">href</code> attributes.</p><p>This implementation is faster and much more memory-efficient
+        than the equivalent tree-style implementation. However, complex
+        SAX-based programs are much more difficult to write than equivalent
+        tree-style programs. Pull parsers are a good compromise. <a class="xref" href="ch02.html#delicious-pull" title="Example 2-10. A del.icio.us client using REXML’s pull parser">Example 2-10</a> shows a client implementation that uses
+        REXML’s pull parser interface.</p><div class="example"><a id="delicious-pull"/><div class="example-title">Example 2-10. A del.icio.us client using REXML’s pull parser</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby -w
+# delicious-pull.rb
+require 'open-uri'
+require 'rexml/parsers/pullparser'
+
+def print_my_recent_bookmarks(username, password)
+  # Make an HTTPS request and read the entity-body as an XML document.
+  xml = open('https://api.del.icio.us/v1/posts/recent',
+             :http_basic_authentication =&gt; [username, password])
+
+  # Feed the XML entity-body into a pull parser
+  parser = REXML::Parsers::PullParser.new(xml)
+
+  # Until there are no more events to pull...
+  while parser.has_next?
+    # ...pull the next event.
+    tag = parser.pull
+    # If it's a 'post' tag...
+    if tag.start_element?
+      if tag[0] == 'post'
+        # Print information about the bookmark.
+        attrs = tag[1]
+        puts "#{attrs['description']}: #{attrs['href']}"
+      end
+    end
+  end
+end
+
+# Main program.
+username, password = ARGV
+unless username and password
+  puts "Usage: #{$0} [USERNAME] [PASSWORD]"
+  exit
+end
+print_my_recent_bookmarks(username, password)</pre></div></div></div><div class="sect2" title="Python: ElementTree"><div class="titlepage"><div><div><h3 class="title" id="pythonparser">Python: ElementTree</h3></div></div></div><p>The<a id="I_indexterm2_tt203" class="indexterm"/><a id="I_indexterm2_tt204" class="indexterm"/><a id="I_indexterm2_tt205" class="indexterm"/><a id="I_indexterm2_tt206" class="indexterm"/> world is full of XML parsers for Python. There are
+        <span class="emphasis"><em>seven</em></span> different XML interfaces in the Python 2.5
+        standard library alone. For full details, see the <a class="ulink" href="http://docs.python.org/lib/markup.html" target="_top">Python library
+        reference</a>.</p><p>For tree-style parsing, the best library is <a class="ulink" href="http://effbot.org/zone/element-index.htm" target="_top">ElementTree</a>.
+        It’s fast, it has a sensible interface, and as of Python 2.5 you don’t
+        have to install anything because it’s in the standard library. On the
+        downside, its support for XPath is limited to simple expressions—of
+        course, nothing else in the standard library supports XPath at all. If
+        you need full XPath support, <a id="I_indexterm2_tt207" class="indexterm"/>try <a class="ulink" href="http://4suite.org/" target="_top">4Suite</a>.</p><p><a class="ulink" href="http://www.crummy.com/software/BeautifulSoup/" target="_top">Beautiful
+        Soup</a> is<a id="I_indexterm2_tt208" class="indexterm"/> a slower tree-style parser that is very forgiving of
+        invalid XML, and offers a programmatic interface to a document. It
+        also handles most character set conversions automatically, letting you
+        work with<a id="I_indexterm2_tt209" class="indexterm"/> Unicode data.</p><p>For SAX-style parsing, the best choice is the<a id="I_indexterm2_tt210" class="indexterm"/> <code class="literal">xml.sax</code> module in
+        the standard library. The <a class="ulink" href="http://pyxml.sourceforge.net/" target="_top">PyXML</a> suite includes a
+        pull parser.</p></div><div class="sect2" title="Java: javax.xml, Xerces, or XMLPull"><div class="titlepage"><div><div><h3 class="title" id="javaparser">Java: javax.xml, <span class="application">Xerces</span>, or <span class="application">XMLPull</span></h3></div></div></div><p>Java 1.5<a id="I_indexterm2_tt211" class="indexterm"/><a id="I_indexterm2_tt212" class="indexterm"/><a id="I_indexterm2_tt213" class="indexterm"/> includes the XML parser written by the Apache Xerces
+        project. The core classes are found in the <a id="I_indexterm2_tt214" class="indexterm"/>packages <code class="classname">javax.xml.*</code>, (for
+        instance, <code class="classname">javax.xml.xpath</code>). The DOM interface
+        lives<a id="I_indexterm2_tt215" class="indexterm"/><a id="I_indexterm2_tt216" class="indexterm"/> in <code class="classname">org.w3c.dom.*</code>, and the SAX
+        interface lives in <code class="classname">org.xml.sax.*</code>. If you’re
+        using a previous version of Java, you can install Xerces yourself and
+        take advantage of the same interface found in Java 1.5 (<a class="ulink" href="http://xerces.apache.org/xerces2-j/" target="_top">http://xerces.apache.org/xerces2-j/</a>).</p><p>There are a variety of pull parsers for Java.<a id="I_indexterm2_tt217" class="indexterm"/><a id="I_indexterm2_tt218" class="indexterm"/> Sun’s Web Services Developer Pack includes a pull
+        parser in<a id="I_indexterm2_tt219" class="indexterm"/> the <code class="classname">javax.xml.stream</code>
+        package.</p><p>For parsing bad XML, you might <a id="I_indexterm2_tt220" class="indexterm"/>try <a class="ulink" href="http://home.ccil.org/~cowan/XML/tagsoup/" target="_top">TagSoup</a>.</p></div><div class="sect2" title="C#: System.Xml.XmlReader"><div class="titlepage"><div><div><h3 class="title" id="id415481">C#: System.Xml.XmlReader</h3></div></div></div><p>The<a id="I_indexterm2_tt221" class="indexterm"/><a id="I_indexterm2_tt222" class="indexterm"/><a id="I_indexterm2_tt223" class="indexterm"/><a id="I_indexterm2_tt224" class="indexterm"/>.NET Common Language Runtime comes with a pull parser
+        interface, in contrast to the more typical (and more complex)
+        SAX-style interface. You can also create a full W3C DOM tree using
+        <code class="classname">XmlDocument</code>. The
+        <code class="classname">XPathDocument</code> class lets you iterate over nodes
+        in the tree that match an XPath expression.</p><p>If you need to handle broken XML documents, check out<a id="I_indexterm2_tt225" class="indexterm"/> Chris Lovett’s <code class="classname">SgmlReader</code> at
+        <a class="ulink" href="http://www.gotdotnet.com/Community/UserSamples/" target="_top">http://www.gotdotnet.com/Community/UserSamples/</a>.</p></div><div class="sect2" title="PHP"><div class="titlepage"><div><div><h3 class="title" id="id437590">PHP</h3></div></div></div><p>You can<a id="I_indexterm2_tt226" class="indexterm"/> create a SAX-style parser with the function<a id="I_indexterm2_tt227" class="indexterm"/> <code class="function">xml_parser_create</code>,
+        and a pull parser with the <code class="function">XMLReader</code> extension. The <code class="function">DOM</code> PHP extension (included in PHP 5)
+        provides a tree-style interface to the GNOME project’s <a id="I_indexterm2_tt228" class="indexterm"/><span class="application">libxml2</span> C
+        library. You might have an easier time using <span class="application">SimpleXML</span>, a tree-style parser that’s
+        not an official DOM implementation. That’s what I used in <a class="xref" href="ch02.html#example_8" title="Example 2-8. A del.icio.us client in PHP">Example 2-8</a>.</p><p>There’s also a pure PHP DOM parser<a id="I_indexterm2_tt229" class="indexterm"/> called <a class="ulink" href="http://sourceforge.net/projects/domit-xmlparser" target="_top">DOMIT!</a>.</p></div><div class="sect2" title="JavaScript: responseXML"><div class="titlepage"><div><div><h3 class="title" id="id437702">JavaScript: responseXML</h3></div></div></div><p>If you’re<a id="ch02_javascriptxml" class="indexterm"/> using<a id="I_indexterm2_tt230" class="indexterm"/><a id="I_indexterm2_tt231" class="indexterm"/> <code class="classname">XMLHttpRequest</code> to write an Ajax
+        client, you don’t have to worry about the XML parser at all. If you
+        make a request and the response entity-body is in XML format, the web
+        browser parses it with its own tree-style parser, and makes it
+        available through the <code class="function">responseXML</code>
+        property of the <code class="classname">XMLHttpRequest</code> object. You
+        manipulate this document with JavaScript DOM methods: the same ones
+        you use to manipulate HTML documents displayed in the browser. <a class="xref" href="ch11.html" title="Chapter 11. Ajax Applications as REST Clients">Chapter 11</a> has more information on how to use <code class="function">responseXML</code>—and how to handle non-XML
+        documents with the <code class="function">responseData</code>
+        member.</p><p>There’s a third-party XML parser, <a class="ulink" href="http://xmljs.sourceforge.net/" target="_top">XML for &lt;SCRIPT&gt;</a>,
+        which <a id="I_indexterm2_tt232" class="indexterm"/>works independently of the parser built into the
+        client’s web browser. “XML for &lt;SCRIPT&gt;” offers DOM and SAX
+        interfaces, and supports XPath queries.</p></div><div class="sect2" title="Other Languages"><div class="titlepage"><div><div><h3 class="title" id="otherlangparser">Other Languages</h3></div></div></div><div class="variablelist"><dl><dt><span class="term">ActionScript</span></dt><dd><p>When you<a id="I_indexterm2_tt233" class="indexterm"/> load a URI with <code class="function">XML.load</code>, it’s automatically parsed
+              into an <code class="classname">XML</code> object, which exposes a
+              tree-style interface.</p></dd><dt><span class="term">C</span></dt><dd><p><a class="ulink" href="http://expat.sourceforge.net/" target="_top">Expat</a>
+              is<a id="I_indexterm2_tt234" class="indexterm"/><a id="I_indexterm2_tt235" class="indexterm"/> the most popular SAX-style parser. The GNOME
+              project’s <a class="ulink" href="http://xmlsoft.org/" target="_top">libxml2</a>
+              contains DOM, pull, and SAX parsers.</p></dd><dt><span class="term">C++</span></dt><dd><p>You<a id="I_indexterm2_tt236" class="indexterm"/> can use either of the C parsers, or the
+              object-oriented <a class="ulink" href="http://xml.apache.org/xerces-c/" target="_top">Xerces-C++ parser</a>.
+              Like the Java version of Xerces, Xerces-C++ exposes both DOM and
+              SAX interfaces.</p></dd><dt><span class="term">Common Lisp</span></dt><dd><p>Use <a class="ulink" href="http://common-lisp.net/project/s-xml/" target="_top">SXML</a>.
+              It<a id="I_indexterm2_tt237" class="indexterm"/><a id="I_indexterm2_tt238" class="indexterm"/> exposes a SAX-like interface, and can also turn
+              an XML document into tree-like S-expressions or Lisp data
+              structures.</p></dd><dt><span class="term">Perl</span></dt><dd><p>As with Python,<a id="I_indexterm2_tt239" class="indexterm"/> there are a variety of XML parsers for Perl.
+              They’re all available on <a id="I_indexterm2_tt240" class="indexterm"/>CPAN. <code class="classname">XML::XPath</code>
+              has<a id="I_indexterm2_tt241" class="indexterm"/> XPath support, and
+              <code class="classname">XML::Simple</code> <a id="I_indexterm2_tt242" class="indexterm"/>turns an XML document into standard Perl data
+              structures. For SAX-style parsing, use <code class="classname">XML::SAX::PurePerl</code>. <a id="I_indexterm2_tt243" class="indexterm"/>For pull parsing, use
+              <code class="classname">XML::LibXML::Reader</code>. <a id="I_indexterm2_tt244" class="indexterm"/>The <a class="ulink" href="http://perl-xml.sourceforge.net/faq/" target="_top">Perl XML FAQ</a>
+              has an overview of the most popular Perl XML libraries.</p></dd></dl></div></div></div><div class="sect1" title="JSON Parsers: Handling Serialized Data"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="json-introduction">JSON Parsers: Handling Serialized Data</h2></div></div></div><p>Most <a id="ch02_json" class="indexterm"/>web services return XML documents, but a growing number
+      return simple data structures (numbers, arrays, hashes, and so on),
+      serialized as JSON-formatted strings. JSON is usually produced by
+      services that expect to be consumed by the client half of an Ajax
+      application. The idea is that it’s a lot easier for a browser to get a
+      JavaScript data structure from a JSON data structure than from an XML
+      document. Every web browser offers a slightly different JavaScript
+      interface to its XML parser, but a JSON string is nothing but a tightly
+      constrained JavaScript program, so it works the same way in every
+      browser.</p><p>Of course, JSON is not <span class="emphasis"><em>tied</em></span> to JavaScript,
+      any more than JavaScript is to Java. JSON makes a lightweight
+      alternative to XML-based approaches to data serialization, like XML
+      Schema. The <a class="ulink" href="http://www.json.org/" target="_top">JSON web site</a>
+      links to implementations in many languages, and I refer you to that site
+      rather than mentioning a JSON library for every language.</p><p>JSON is a simple and language-independent way of formatting
+      programming language data structures (numbers, arrays, hashes, and so
+      on) as strings. <a class="xref" href="ch02.html#simple-json-example" title="Example 2-11. A mixed-type array in JSON format">Example 2-11</a> is a JSON
+      representation of a simple data structure: a mixed-type array.</p><div class="example"><a id="simple-json-example"/><div class="example-title">Example 2-11. A mixed-type array in JSON format</div><div class="example-contents"><pre class="programlisting">[3, "three"]</pre></div></div><p>By comparison, <a class="xref" href="ch02.html#xml-array" title="Example 2-12. A mixed-type array in XML-RPC format">Example 2-12</a> is one possible XML
+      representation of the same data.</p><div class="example"><a id="xml-array"/><div class="example-title">Example 2-12. A mixed-type array in XML-RPC format</div><div class="example-contents"><pre class="programlisting">&lt;value&gt;
+ &lt;array&gt;
+  &lt;data&gt;
+   &lt;value&gt;&lt;i4&gt;3&lt;/i4&gt;&lt;/value&gt;
+   &lt;value&gt;&lt;string&gt;three&lt;/string&gt;&lt;/value&gt;
+  &lt;/data&gt;
+ &lt;/array&gt;
+&lt;/value&gt;</pre></div></div><p>Since a JSON string is nothing but a tightly constrained
+      JavaScript program, you can “parse” JSON simply by calling <code class="function">eval</code> on the string. This is very fast, but
+      you shouldn’t do it unless you control the web service that served your
+      JSON. An untested or untrusted web service can send the client buggy or
+      malicious JavaScript programs instead of real JSON structures. For the
+      JavaScript examples in <a class="xref" href="ch11.html" title="Chapter 11. Ajax Applications as REST Clients">Chapter 11</a>, I use a JSON parser
+      written in JavaScript and available from <span class="emphasis"><em>json.org</em></span>
+      (see <a class="xref" href="ch02.html#example_13" title="Example 2-13. A JSON demo in JavaScript">Example 2-13</a>).</p><div class="example"><a id="example_13"/><div class="example-title">Example 2-13. A JSON demo in JavaScript</div><div class="example-contents"><pre class="programlisting">&lt;!-- json-demo.html --&gt;
+&lt;!-- In a real application, you would save json.js locally
+     instead of fetching it from json.org every time. --&gt;
+&lt;script type="text/javascript" src="http://www.json.org/json.js"&gt;
+&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+ array = [3, "three"]
+ alert("Converted array into JSON string: '" + array.toJSONString() + "'")
+ json = "[4, \"four\"]"
+ alert("Converted JSON '" + json + "' into array:")
+ array2 = json.parseJSON()
+ for (i=0; i &lt; array2.length; i++)
+ {
+   alert("Element #" + i + " is " + array2[i])
+ }
+&lt;/script&gt;</pre></div></div><p>The<a id="I_indexterm2_tt245" class="indexterm"/> Dojo JavaScript framework has a JSON library in the
+      <code class="literal">dojo.json</code> package, so if you’re using
+      Dojo you don’t have to install anything extra. A future version of
+      the<a id="I_indexterm2_tt246" class="indexterm"/> ECMAScript standard may define JSON serialization and
+      deserialization methods as part of the JavaScript language, making
+      third-party libraries obsolete.</p><p>In this book’s Ruby examples, I’ll use the JSON parser that comes
+      from the<a id="I_indexterm2_tt247" class="indexterm"/> <code class="literal">json</code> Ruby gem. The two
+      most important methods are <code class="function">Object#to_json</code> and <code class="function">JSON.parse</code>. Try running the Ruby code in
+      <a class="xref" href="ch02.html#example_14" title="Example 2-14. A JSON demo in Ruby">Example 2-14</a> through the <code class="literal">irb</code> interpreter.</p><div class="example"><a id="example_14"/><div class="example-title">Example 2-14. A JSON demo in Ruby</div><div class="example-contents"><pre class="programlisting"># json-demo.rb
+require 'rubygems'
+require 'json'
+
+[3, "three"].to_json                 # =&gt; "[3,\"three\"]"
+JSON.parse('[4, "four"]')            # =&gt; [4, "four"]</pre></div></div><p>Right now, Yahoo! Web Services are the most popular public web
+      services to <a class="ulink" href="http://developer.yahoo.com/common/json.html" target="_top">serve JSON</a>.
+      <a class="xref" href="ch02.html#yahoo-web-search-json" title="Example 2-15. Searching the Web with Yahoo!’s web service (JSON edition)">Example 2-15</a> shows a command-line program,
+      written in Ruby, that uses the Yahoo! News web service to get a JSON
+      representation of current news stories.</p><div class="example"><a id="yahoo-web-search-json"/><div class="example-title">Example 2-15. Searching the Web with Yahoo!’s web service (JSON
+        edition)</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby
+# yahoo-web-search-json.rb
+require 'rubygems'
+require 'json'
+require 'open-uri'
+$KCODE = 'UTF8'
+
+# Search the web for a term, and print the titles of matching web pages.
+def search(term)
+  base_uri = 'http://api.search.yahoo.com/NewsSearchService/V1/newsSearch'
+
+  # Make the HTTP request and read the response entity-body as a JSON
+  # document.
+  json = open(base_uri + "?appid=restbook&amp;output=json&amp;query=#{term}").read
+
+  # Parse the JSON document into a Ruby data structure.
+  json = JSON.parse(json)
+
+  # Iterate over the data structure...
+  json['ResultSet']['Result'].each do
+    # ...and print the title of each web page.
+    |r| puts r['Title']
+  end
+end
+
+# Main program.
+unless ARGV[0]
+  puts "Usage: #{$0} [search term]"
+  exit
+end
+search(ARGV[0])</pre></div></div><p>Compare this to the program <em class="filename">yahoo-web-search.rb</em> in <a class="xref" href="ch02.html#yahoowebsearch" title="Example 2-1. Searching the Web with Yahoo!’s web service">Example 2-1</a>. That program has the same basic structure,
+      but it works differently. It asks for search results formatted as XML,
+      parses the XML, and uses an XPath query to extract the result titles.
+      This program parses a JSON data structure into a native-language data
+      structure (a hash), and traverses it with native-language operators
+      instead of XPath.</p><p>If JSON is so simple, why not use it for everything? You could do
+      that, but I don’t recommend it. JSON is good for representing data
+      structures in general, and the Web mainly serves
+      <span class="emphasis"><em>documents</em></span>: irregular, self-describing data
+      structures that link to each other. XML and HTML are specialized for
+      representing documents. A JSON representation of a web page would be
+      hard to read, just like the XML representation of an array in <a class="xref" href="ch02.html#xml-array" title="Example 2-12. A mixed-type array in XML-RPC format">Example 2-12</a> was hard to read. JSON is useful when you need to
+      describe a data structure that doesn’t fit easily into the document
+      paradigm: a simple list, for instance, or a hash.<a id="I_indexterm2_tt248" class="indexterm"/><a id="I_indexterm2_tt249" class="indexterm"/></p></div><div class="sect1" title="Clients Made Easy with WADL"><div class="titlepage"><div><div><h2 class="title" style="clear: both" id="wadl-intro">Clients Made Easy with WADL</h2></div></div></div><p>So far<a id="I_indexterm2_tt250" class="indexterm"/> I’ve presented code in a variety of languages, but it
+      always follows the same three-step pattern. To call a web service I
+      build up the elements of an HTTP request (method, URI, headers, and
+      entity-body). I use an HTTP library to turn that data into a real HTTP
+      request, and the library sends the request to the appropriate server.
+      Then I use an XML parser to parse the response into a data structure or
+      a series of events. Once I make the request, I’m free to use the
+      response data however I like. In this regard all RESTful web services,
+      and most hybrid services, are the same. What’s more, as I’ll show in the
+      chapters to come, all RESTful web services use HTTP the same way: HTTP
+      has what’s called a uniform interface.</p><p>Can I take advantage of this similarity? Abstract this pattern out
+      into a generic “REST library” that can access any web service that
+      supports the uniform interface? There’s precedent for this. The Web
+      Service Description Language (WSDL) describes the differences between
+      RPC-style web services in enough detail that a generic library can
+      access any RPC-style SOAP service, given an appropriate WSDL
+      file.</p><p>For RESTful and hybrid services, I recommend using the Web
+      <span class="emphasis"><em>Application</em></span> Description Language. A WADL file
+      describes the HTTP requests you can legitimately make of a service:
+      which URIs you can visit, what data those URIs expect you to send, and
+      what data they serve in return. A WADL library can parse this file and
+      model the space of possible service requests as a native language
+      API.</p><p><a id="delicious-wadl-ruby"/>I describe WADL in more detail in <a class="xref" href="ch09.html" title="Chapter 9. The Building Blocks of Services">Chapter 9</a>, but here’s a taste. The del.icio.us client
+      shown in <a class="xref" href="ch02.html#example_2_16" title="Example 2-16. A Ruby/WADL client for del.icious">Example 2-16</a> is equivalent to the Ruby
+      client in <a class="xref" href="ch02.html#ruby-delicious" title="Example 2-4. A Ruby client using open-uri">Example 2-4</a>, but it uses Ruby’s WADL
+      library and a bootleg WADL file I created for del.icio.us. (I’ll show
+      you the WADL file in <a class="xref" href="ch08.html" title="Chapter 8. REST and ROA Best Practices">Chapter 8</a>.)</p><div class="example"><a id="example_2_16"/><div class="example-title">Example 2-16. A Ruby/WADL client for
+        del.icious</div><div class="example-contents"><pre class="programlisting">#!/usr/bin/ruby
+# delicious-wadl-ruby.rb
+require 'wadl'
+
+if ARGV.size != 2
+  puts "Usage: #{$0} [username] [password]"
+  exit
+end
+username, password = ARGV
+
+# Load an application from the WADL file
+delicious = WADL::Application.from_wadl(open("delicious.wadl"))
+
+# Give authentication information to the application
+service = delicious.v1.with_basic_auth(username, password)
+
+begin
+  # Find the "recent posts" functionality
+  recent_posts = service.posts.recent
+
+  # For every recent post...
+  recent_posts.get.representation.each_by_param('post') do |post|
+    # Print its description and URI.
+    puts "#{post.attributes['description']}: #{post.attributes['href']}"
+  end
+rescue WADL::Faults::AuthorizationRequired
+  puts "Invalid authentication information!"
+end</pre></div></div><p>Behind the scenes, this code makes exactly the same HTTP request
+      as the other del.icio.us clients seen in this chapter. The details are
+      hidden in the WADL file <em class="filename">delicious.wadl</em>, which is interpreted by the
+      WADL client library inside <code class="function">WADL::Application.from_WADL</code>. This code is not
+      immediately recognizable as a web service client. That’s a good thing:
+      it means the library is doing its job. And yet, when we come back to
+      this code in <a class="xref" href="ch09.html" title="Chapter 9. The Building Blocks of Services">Chapter 9</a>, you’ll see that it
+      follows the principles of REST as much as the examples that made their
+      own HTTP requests. WADL abstracts away the details of HTTP, but not the
+      underlying RESTful interface.</p><p>As of the time of writing, WADL adoption is very poor. If you want
+      to use a WADL client for a service, instead of writing a
+      language-specific client, you’ll probably have to write the WADL file
+      yourself. It’s not difficult to write a bootleg WADL file for someone
+      else’s service: I’ve done it for del.icio.us and a few other services.
+      You can even write a WADL file that lets you use a web
+      application—designed for human use—as a web service. WADL is designed to
+      describe RESTful web services, but it can describe almost anything that
+      goes on the Web.</p><p>A Ruby library called ActiveResource takes a different strategy.
+      It only works with certain kinds of web services, but it hides the
+      details of RESTful HTTP access behind a simple object-oriented
+      interface. I cover ActiveResource in the next chapter, after introducing
+      some REST terminology<a id="I_indexterm2_tt251" class="indexterm"/>.<a id="I_indexterm2_tt252" class="indexterm"/></p></div><div class="footnotes" epub:type="footnotes"><br/><hr style="width: 100; align: left;"/><div class="footnote" id="ftn.id414573"><p><sup>[<a href="#id414573" class="para">8</a>] </sup>On<a id="I_indexterm2_tt149" class="indexterm"/><a id="I_indexterm2_tt150" class="indexterm"/> Debian GNU/Linux and Debian-derived systems like
+            Ubuntu, the package name is<a id="I_indexterm2_tt151" class="indexterm"/> <code class="literal">libopenssl-ruby</code>.
+            If your packaging system doesn’t include <code class="literal">net/https</code>, you’ll have to download it
+            from <a class="ulink" href="http://www.nongnu.org/rubypki/" target="_top">http://www.nongnu.org/rubypki/</a> and
+            install it by hand.</p></div><div class="footnote" id="ftn.id414702"><p><sup>[<a href="#id414702" class="para">9</a>] </sup>For more information on Ruby gems, see <a class="ulink" href="http://rubygems.org/" target="_top">http://rubygems.org/</a>. Once you have<a id="I_indexterm2_tt153" class="indexterm"/> the <code class="literal">gem</code> program
+            installed, you can<a id="I_indexterm2_tt154" class="indexterm"/> install <code class="literal">rest-open-uri</code> with the command <code class="literal">gem install rest-open-uri</code>. Hopefully my
+            modifications to <code class="literal">open-uri</code> will
+            one day make it into the core Ruby code, and the <code class="literal">rest-open-uri</code> gem will become
+            redundant.</p></div></div></section></body></html>
