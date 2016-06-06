@@ -17,7 +17,7 @@ exports.register = function (server, options, next) {
                         output : 'stream',
                         parse : 'true',
                         allow : 'multipart/form-data',
-                        maxBytes: 10485760,
+                        maxBytes: 20971520,
                         timeout: 300000
                     },
                     validate : {

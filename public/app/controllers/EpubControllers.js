@@ -20,6 +20,7 @@ angular
                 message: 'Uploading...',
                 showMessage: true
             };
+            
             vm.uploadEpub = function (file, error) {
 
                 if (file) {
