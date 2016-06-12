@@ -114,95 +114,100 @@
 
     <div class="container" ng-show="extractCtrl.watermark">
 
-        <div class="row">
-            <div class="col-md-12">
-                <h3> Extracted Css Watermarks ({{ extractCtrl.watermark.cssWatermarks.length || 0 }}) </h3>
+        <div ng-show="extractCtrl.watermark.cssWatermarks">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3> Extracted Css Watermarks ({{ extractCtrl.watermark.cssWatermarks.length || 0 }}) </h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th> Index </th>
+                            <th> Css files IDs </th>
+                            <th> Watermark </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="cssWatermark in extractCtrl.watermark.cssWatermarks">
+                            <th> {{ $index }} </th>
+                            <td>{{ cssWatermark.id }}</td>
+                            <td>{{ '0x' + cssWatermark.watermark.substr(2).toUpperCase() }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th> Index </th>
-                        <th> Css files IDs </th>
-                        <th> Watermark </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="cssWatermark in extractCtrl.watermark.cssWatermarks">
-                        <th> {{ $index }} </th>
-                        <td>{{ cssWatermark.id }}</td>
-                        <td>{{ '0x' + cssWatermark.watermark.substr(2).toUpperCase() }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div ng-show="extractCtrl.watermark.imageWatermarks">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Extracted Images Watermarks ({{ extractCtrl.watermark.imageWatermarks.length }})</h3>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <h3>Extracted Images Watermarks ({{ extractCtrl.watermark.imageWatermarks.length }})</h3>
-            </div>
-        </div>
-        <uib-accordion close-others="false">
-            <uib-accordion-group  ng-repeat="watermark in extractCtrl.watermark.imageWatermarks track by $index"
-                                  is-open="accordionImages.open[$index]"
-                                  class="{{ extractCtrl.getPanelClass(watermark.error) }}">
-                <uib-accordion-heading >
-                    Watermark N°{{ $index + 1 }}
-                    <i class="pull-right glyphicon"
-                       ng-class="{'glyphicon-chevron-down': accordionImages.open[$index], 'glyphicon-chevron-right': !accordionImages.open[$index]}"></i>
-                </uib-accordion-heading>
-                <div class="row">
-                    <div class="col-md-8">
-                        <h4>Watermark</h4>
-                        <div class="well">
-                            {{ watermark.watermark }}
+            <uib-accordion close-others="false">
+                <uib-accordion-group  ng-repeat="watermark in extractCtrl.watermark.imageWatermarks track by $index"
+                                      is-open="accordionImages.open[$index]"
+                                      class="{{ extractCtrl.getPanelClass(watermark.error) }}">
+                    <uib-accordion-heading >
+                        Watermark N°{{ $index + 1 }}
+                        <i class="pull-right glyphicon"
+                           ng-class="{'glyphicon-chevron-down': accordionImages.open[$index], 'glyphicon-chevron-right': !accordionImages.open[$index]}"></i>
+                    </uib-accordion-heading>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Watermark</h4>
+                            <div class="well">
+                                {{ watermark.watermark }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h4>QrCode</h4>
+                            <qr-code ng-hide="watermark.error" qr-code-data="watermark.watermark"
+                                     refresh-time="500">
+                            </qr-code>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <h4>QrCode</h4>
-                        <qr-code ng-hide="watermark.error" qr-code-data="watermark.watermark"
-                                 refresh-time="500">
-                        </qr-code>
-                    </div>
-                </div>
-            </uib-accordion-group>
-        </uib-accordion>
-
-
-        <div class="row">
-            <div class="col-md-12">
-                <h3>Extracted Xhtml Watermarks ({{ extractCtrl.watermark.xhtmlWatermarks.length }})</h3>
-            </div>
+                </uib-accordion-group>
+            </uib-accordion>
         </div>
-        <uib-accordion close-others="false">
-            <uib-accordion-group  ng-repeat="watermark in extractCtrl.watermark.xhtmlWatermarks track by $index"
-                                  is-open="accordionXhtml.open[$index]"
-                                  class="{{ extractCtrl.getPanelClass(watermark.error) }}">
-                <uib-accordion-heading >
-                    Watermark N°{{ $index + 1 }}
-                    <i class="pull-right glyphicon"
-                       ng-class="{'glyphicon-chevron-down': accordionXhtml.open[$index], 'glyphicon-chevron-right': !accordionXhtml.open[$index]}"></i>
-                </uib-accordion-heading>
-                <div class="row">
-                    <div class="col-md-8">
-                        <h4>Watermark</h4>
-                        <div class="well">
-                            {{ watermark.watermark }}
+
+        <div ng-show="extractCtrl.watermark.xhtmlWatermarks">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Extracted Xhtml Watermarks ({{ extractCtrl.watermark.xhtmlWatermarks.length }})</h3>
+                </div>
+            </div>
+            <uib-accordion close-others="false">
+                <uib-accordion-group  ng-repeat="watermark in extractCtrl.watermark.xhtmlWatermarks track by $index"
+                                      is-open="accordionXhtml.open[$index]"
+                                      class="{{ extractCtrl.getPanelClass(watermark.error) }}">
+                    <uib-accordion-heading >
+                        Watermark N°{{ $index + 1 }}
+                        <i class="pull-right glyphicon"
+                           ng-class="{'glyphicon-chevron-down': accordionXhtml.open[$index], 'glyphicon-chevron-right': !accordionXhtml.open[$index]}"></i>
+                    </uib-accordion-heading>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Watermark</h4>
+                            <div class="well">
+                                {{ watermark.watermark }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h4>QrCode</h4>
+                            <qr-code ng-hide="watermark.error" qr-code-data="watermark.watermark"
+                                     refresh-time="500">
+                            </qr-code>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <h4>QrCode</h4>
-                        <qr-code ng-hide="watermark.error" qr-code-data="watermark.watermark"
-                                 refresh-time="500">
-                        </qr-code>
-                    </div>
-                </div>
-            </uib-accordion-group>
-        </uib-accordion>
+                </uib-accordion-group>
+            </uib-accordion>
+        </div>
+
     </div>
 
     <octopus-loading load="extractCtrl.load" ng-show="extractCtrl.load.loading" class="ng-hide"></octopus-loading>
